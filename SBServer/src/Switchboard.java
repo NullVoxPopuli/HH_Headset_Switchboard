@@ -2,12 +2,25 @@ import java.util.ArrayList;
 
 
 public class Switchboard {
+	public static final boolean DEBUG = true;
 	
 	private static ClientManager manager;
+	private static RTPConnector rtpConnector = new RTPConnector();
+	
+	// these are things that can change real time
+	public static String serverIP = "137.112.113.208";
+	public static String serverPort = "13377";
 	
 	public static void main(String[] args){
 		ArrayList<Client> clients = getClients();
 		manager = new ClientManager(clients);
+		
+		// init our RTP Connector
+		rtpConnector.init();
+		
+		
+		// begin rtp stream stuff
+		rtpConnector.start();
 	}
 
 	private static ArrayList<Client> getClients() {
