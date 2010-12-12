@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 import javax.media.CannotRealizeException;
+import javax.media.ControllerEvent;
+import javax.media.ControllerListener;
 import javax.media.DataSink;
 import javax.media.Format;
 import javax.media.Manager;
@@ -11,6 +13,7 @@ import javax.media.NoPlayerException;
 import javax.media.Player;
 import javax.media.Processor;
 import javax.media.ProcessorModel;
+import javax.media.RealizeCompleteEvent;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
@@ -58,7 +61,19 @@ public class RTPMediaNode {
 	public void startPlayer()
 	{
 		try {
+			
 			Player p = Manager.createRealizedPlayer(mediaLocator);
+			p.addControllerListener(new ControllerListener(){
+
+				@Override
+				public void controllerUpdate(ControllerEvent arg0) {
+					if (arg0 instanceof RealizeCompleteEvent){
+						System.out.println("We have received data, and we are playing... =)");
+					}
+					
+				}
+				
+			});
 			if (Switchboard.DEBUG) System.out.println("... attached to port ...");
 			p.start();
 			if (Switchboard.DEBUG) System.out.println("... playing.");
