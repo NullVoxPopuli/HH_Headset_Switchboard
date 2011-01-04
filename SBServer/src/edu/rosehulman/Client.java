@@ -1,3 +1,4 @@
+package edu.rosehulman;
 public class Client {
 
 	private Channel audience;

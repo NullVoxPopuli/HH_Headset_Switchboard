@@ -1,11 +1,15 @@
+package edu.rosehulman;
 import java.io.IOException;
 
+import javax.media.Manager;
 import javax.media.MediaLocator;
+import javax.media.rtp.SessionManager;
 
 
 public class RTPConnector {
 
 	RTPMediaNode receiver = new RTPMediaNode();
+	private SessionManager mgr;
 
 	public String[] getConnections(){
 		return null;
@@ -25,6 +29,7 @@ public class RTPConnector {
 		
 		receiver.setMediaLocator(new MediaLocator("rtp://" + Switchboard.serverIP + 
 													":" + Switchboard.serverPort + "/audio"));
+		mgr = receiver.createManager(Switchboard.serverIP, Switchboard.serverPort + 2, 100, true);
 		
 		
 		
@@ -39,7 +44,7 @@ public class RTPConnector {
 		if(Switchboard.DEBUG )
 			System.out.println("Trying to get data from " + Switchboard.serverIP + 
 													":" + Switchboard.serverPort + "/audio");
-		receiver.startPlayer();
+			receiver.startPlayer();
 		
 	}
 	
@@ -68,5 +73,7 @@ public class RTPConnector {
 	public void mergeStreams(){
 		
 	}
+	
+	
 	
 }
