@@ -8,7 +8,7 @@ public class Switchboard {
 	private static RTPConnector rtpConnector = new RTPConnector();
 	
 	// these are things that can change real time
-	public static String serverIP = "137.112.113.208";
+	public static String serverIP = "137.112.104.89";
 	public static String serverPort = "13377";
 	
 	public static void main(String[] args){
