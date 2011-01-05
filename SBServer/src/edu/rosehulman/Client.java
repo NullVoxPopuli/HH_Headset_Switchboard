@@ -1,10 +1,14 @@
 package edu.rosehulman;
+
+import javax.media.Player;
+
 public class Client {
 
 	private Channel audience;
 	private String name;
 	private String ip;
 	private String port;
+	private Player rtpPlayer;
 
 	public Channel getAudience() {
 		return audience;
@@ -47,6 +51,10 @@ public class Client {
 		this.name = name;
 		this.ip = ip;
 		this.port = port;
+	}
+
+	public Client(Player RTPPlayer) {
+		this.rtpPlayer = RTPPlayer;
 	}
 
 	public void removeClientFromChannel(Client c) {

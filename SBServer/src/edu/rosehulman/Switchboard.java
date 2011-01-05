@@ -13,8 +13,10 @@ public class Switchboard {
 	public static int serverPort = 13378;
 	
 	public static void main(String[] args){
-		ArrayList<Client> clients = getClients();
-		manager = new ClientManager(clients);
+		// Since Client Manager is a singleton, we shoud make it static, so we don't have 
+		// multiple copies.
+		//ArrayList<Client> clients = getClients();
+		//manager = new ClientManager(clients);
 		
 		// init our RTP Connector
 		rtpConnector.init();

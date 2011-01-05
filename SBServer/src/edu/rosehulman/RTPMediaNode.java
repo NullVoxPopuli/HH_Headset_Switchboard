@@ -38,7 +38,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	private Processor mediaProcessor = null;
 	private Player p;
 	private SessionManager mgr;
-	private ArrayList<Player> playerlist = new ArrayList<Player>();
 
 	public void setDataSource(DataSource sendStreamSource) throws IOException,
 			MediaException {
@@ -202,7 +201,8 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 
 	             if (newplayer == null) return;
 	 
-	             playerlist.add(newplayer);
+	             //playerlist.add(newplayer);
+	             ClientManager.addNewClientWithStream(newplayer);
 	             newplayer.addControllerListener(this);
 	            
 	             // send this player to player GUI

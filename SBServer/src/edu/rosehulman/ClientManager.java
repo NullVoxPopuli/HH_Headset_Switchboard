@@ -1,16 +1,18 @@
 package edu.rosehulman;
 import java.util.ArrayList;
 
+import javax.media.Player;
+
 public class ClientManager {
 
-	private ArrayList<Client> clients;
+	private static ArrayList<Client> clients = new ArrayList<Client>();
 
-	public ArrayList<Client> getClients() {
+	public static ArrayList<Client> getClients() {
 		return clients;
 	}
 
 	public ClientManager(ArrayList<Client> clients) {
-		this.clients = clients;
+		ClientManager.clients = clients;
 	}
 
 
@@ -36,5 +38,9 @@ public class ClientManager {
 		for (Client d : clients) {
 			d.removeClientFromChannel(c);
 		}
+	}
+
+	public static void addNewClientWithStream(Player RTPPlayer) {
+		clients.add(new Client(RTPPlayer));
 	}
 }
