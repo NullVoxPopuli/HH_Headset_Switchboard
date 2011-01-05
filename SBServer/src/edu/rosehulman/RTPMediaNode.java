@@ -101,13 +101,13 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 
 	@Override
 	public void controllerUpdate(ControllerEvent event) {
-		if (event instanceof RealizeCompleteEvent) {
-			if (Switchboard.DEBUG)
-				System.out.println("Data recieved ...");
-			p.start();
-			if (Switchboard.DEBUG)
-				System.out.println("... playing stream.");
-		}
+//		if (event instanceof RealizeCompleteEvent) {
+//			if (Switchboard.DEBUG)
+//				System.out.println("Data recieved ...");
+//			p.start();
+//			if (Switchboard.DEBUG)
+//				System.out.println("... playing stream.");
+//		}
 	}
 
 	public SessionManager createManager(String address, int port, int ttl,
