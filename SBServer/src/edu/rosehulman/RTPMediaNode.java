@@ -55,12 +55,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 */
 	public void setDataSource(DataSource sendStreamSource) throws IOException,
 			MediaException {
-		ProcessorModel model = new ProcessorModel(sendStreamSource, FORMATS,
-				CONTENT_DESCRIPTOR);
-		this.mediaProcessor = Manager.createRealizedProcessor(model);// (sendStreamSource);
-		if (Switchboard.DEBUG)
-			System.out.println("... media processed ...");
-		this.dataSink = Manager.createDataSink(this.mediaProcessor.getDataOutput(),
+		this.dataSink = Manager.createDataSink(sendStreamSource,
 				this.mediaLocator);
 		if (Switchboard.DEBUG)
 			System.out.println("... target linked ...");
@@ -95,7 +90,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 * @throws IOException
 	 */
 	public void startStreaming() throws IOException {
-		this.mediaProcessor.start();
 
 		this.dataSink.open();
 		this.dataSink.start();
@@ -106,7 +100,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	public void sendStream() throws Exception{
 			RTPMediaNode broadcaster = new RTPMediaNode();
 			broadcaster.setMediaLocator(new MediaLocator("rtp://"+kennyIP+":"+kennyPort+"/audio"));
-			Processor p = Manager.createRealizedProcessor(new ProcessorModel(new MediaLocator("rtp://"+bennieIP+":"+benniePort+"/audio"), FORMATS, new ContentDescriptor(ContentDescriptor.RAW_RTP)));
 			Client kenny = ClientManager.getClients().get(0);
 			DataSource d = (DataSource)kenny.getAudioStream(); 
 			broadcaster.setDataSource(d);
@@ -114,7 +107,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 			
 			RTPMediaNode broadcaster2 = new RTPMediaNode();
 			broadcaster2.setMediaLocator(new MediaLocator("rtp://"+bennieIP+":"+benniePort+"/audio"));
-			Processor p2 = Manager.createRealizedProcessor(new ProcessorModel(new MediaLocator("rtp://"+kennyIP+":"+kennyPort+"/audio"), FORMATS, new ContentDescriptor(ContentDescriptor.RAW_RTP)));
 			Client bennie = ClientManager.getClients().get(1);
 			DataSource d2 = (DataSource)bennie.getAudioStream();
 			broadcaster2.setDataSource(d2);
@@ -259,9 +251,9 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	                 // create a player by passing datasource to the 
 	                 // Media Manager
 	                 newplayer = Manager.createPlayer(dsource);
-	                 newplayer.start();
+	                 //newplayer.start();
 
-	                 sendStream();
+	                 if (ClientManager.getClients().size() == 2) sendStream();
 	                 //TODO: instead of start(), broadcast to clients
 	                 System.out.println("created player " + newplayer);
 //	                 ((equip.ect.components.rtpviewer.RTPPlayer)newplayer).getAddress();
