@@ -11,7 +11,8 @@ public class Switchboard {
 	private static RTPConnector rtpConnector = new RTPConnector();
 	
 	// these are things that can change real time
-	public static String serverIP = "0.0.0.0"; // backup incase the OS can't figure out it's IP
+
+	public static String serverIP = "0.0.0.0"; // backup incase the OS can't figure out its IP
 	public static int serverPort = 13378;
 	
 	public static void main(String[] args){

@@ -1,5 +1,6 @@
 package edu.rosehulman;
 
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -45,6 +46,12 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	private Player p;
 	private SessionManager mgr;
 
+	/**
+	 * Specifies a ProcessorModel for the RTPMediaNode using a DataSource
+	 * @param sendStreamSource The DataSource to be set
+	 * @throws IOException
+	 * @throws MediaException
+	 */
 	public void setDataSource(DataSource sendStreamSource) throws IOException,
 			MediaException {
 		ProcessorModel model = new ProcessorModel(sendStreamSource, FORMATS,
@@ -58,6 +65,12 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 			System.out.println("... target linked ...");
 	}
 
+	/**
+	 * Specifies the Processor for the RTPMediaNode using a given Processor
+	 * @param p The Processor to be set 
+	 * @throws IOException
+	 * @throws MediaException
+	 */
 	public void setDataSource(Processor p) throws IOException, MediaException {
 		mediaProcessor = p;
 		dataSink = Manager.createDataSink(mediaProcessor.getDataOutput(),
@@ -66,12 +79,20 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 			System.out.println("... target linked and media processed.");
 	}
 
+	/**
+	 * Sets the MediaLocator, which will be used to create the audio player
+	 * @param ml The MediaLocator to be used
+	 */
 	public void setMediaLocator(MediaLocator ml) {
 		mediaLocator = ml;
 		if (Switchboard.DEBUG)
 			System.out.println("... successful.");
 	}
 
+	/**
+	 * Tells the node to begin sending sound
+	 * @throws IOException
+	 */
 	public void startStreaming() throws IOException {
 		mediaProcessor.start();
 
@@ -80,7 +101,14 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 		if (Switchboard.DEBUG)
 			System.out.println("... sending.");
 	}
+	
+	public void sendStream(){
+		
+	}
 
+	/**
+	 * Begin playing sound
+	 */
 	public void startPlayer() {
 		try {
 			p = Manager.createPlayer(mediaLocator);
@@ -96,6 +124,10 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 		}
 	}
 
+	/**
+	 * Stop playing sounds
+	 * @throws IOException
+	 */
 	public void stop() throws IOException {
 		if (Switchboard.DEBUG)
 			System.out.println("... stopping ...");
@@ -115,6 +147,14 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 //		}
 	}
 
+	/**
+	 * Creates the Manager that will be used to control the node
+	 * @param address
+	 * @param port
+	 * @param ttl
+	 * @param listener
+	 * @return
+	 */
 	public SessionManager createManager(String address, int port, int ttl,
 			boolean listener) {
 		

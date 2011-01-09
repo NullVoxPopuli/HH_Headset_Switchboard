@@ -1,8 +1,15 @@
 package edu.rosehulman;
 import java.io.IOException;
 
+import javax.media.CannotRealizeException;
+import javax.media.Format;
 import javax.media.Manager;
 import javax.media.MediaLocator;
+import javax.media.NoProcessorException;
+import javax.media.Processor;
+import javax.media.ProcessorModel;
+import javax.media.format.AudioFormat;
+import javax.media.protocol.ContentDescriptor;
 import javax.media.rtp.SessionManager;
 
 
@@ -10,10 +17,29 @@ public class RTPConnector {
 
 	RTPMediaNode receiver = new RTPMediaNode();
 	private SessionManager mgr;
+	String kennyIP = "137.112.104.158";
+	String kennyPort = "13378";
+	String bennieIP = "137.112.104.163";
+	String benniePort = "13378";
+	public static final Format[] FORMATS = new Format[] { new AudioFormat(AudioFormat.MPEG_RTP, 48000, 16, 1) };
 
 	public String[] getConnections(){
 		return null;
 		
+	}
+	
+	public void sendStream() throws Exception{
+		RTPMediaNode broadcaster = new RTPMediaNode();
+		broadcaster.setMediaLocator(new MediaLocator("rtp://"+kennyIP+":"+kennyPort+"/audio"));
+		Processor p = Manager.createRealizedProcessor(new ProcessorModel(new MediaLocator("rtp://"+bennieIP+":"+benniePort+"/audio"), FORMATS, new ContentDescriptor(ContentDescriptor.RAW_RTP)));
+		broadcaster.setDataSource(p);
+		broadcaster.startStreaming();
+		
+		RTPMediaNode broadcaster2 = new RTPMediaNode();
+		broadcaster2.setMediaLocator(new MediaLocator("rtp://"+bennieIP+":"+benniePort+"/audio"));
+		Processor p2 = Manager.createRealizedProcessor(new ProcessorModel(new MediaLocator("rtp://"+kennyIP+":"+kennyPort+"/audio"), FORMATS, new ContentDescriptor(ContentDescriptor.RAW_RTP)));
+		broadcaster2.setDataSource(p2);
+		broadcaster2.startStreaming();
 	}
 	
 	public void init(){		
@@ -47,7 +73,12 @@ public class RTPConnector {
 //			receiver.startPlayer();
 			Thread t = new Thread(new StayAwake(), "Switchboard Server Lifeline");
 			t.start();
-		
+		try {
+			sendStream();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 
