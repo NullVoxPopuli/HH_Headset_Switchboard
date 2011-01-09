@@ -1,11 +1,9 @@
 package edu.rosehulman;
 import java.io.IOException;
 
-import javax.media.CannotRealizeException;
 import javax.media.Format;
 import javax.media.Manager;
 import javax.media.MediaLocator;
-import javax.media.NoProcessorException;
 import javax.media.Processor;
 import javax.media.ProcessorModel;
 import javax.media.format.AudioFormat;
@@ -17,17 +15,20 @@ public class RTPConnector {
 
 	RTPMediaNode receiver = new RTPMediaNode();
 	private SessionManager mgr;
-	String kennyIP = "137.112.104.158";
-	String kennyPort = "13378";
-	String bennieIP = "137.112.104.163";
-	String benniePort = "13378";
-	public static final Format[] FORMATS = new Format[] { new AudioFormat(AudioFormat.MPEG_RTP, 48000, 16, 1) };
+	boolean hasNotRecievedQuitCommand = true;
 
 	public String[] getConnections(){
 		return null;
 		
 	}
 	
+	String kennyIP = "137.112.104.158";
+	String kennyPort = "13378";
+	String bennieIP = "137.112.104.163";
+	String benniePort = "13378";
+	public static final Format[] FORMATS = new Format[] { new AudioFormat(AudioFormat.MPEG_RTP, 48000, 16, 1) };
+
+
 	public void sendStream() throws Exception{
 		RTPMediaNode broadcaster = new RTPMediaNode();
 		broadcaster.setMediaLocator(new MediaLocator("rtp://"+kennyIP+":"+kennyPort+"/audio"));
@@ -41,6 +42,7 @@ public class RTPConnector {
 		broadcaster2.setDataSource(p2);
 		broadcaster2.startStreaming();
 	}
+
 	
 	public void init(){		
 		// Set location to read from.... could we maybe just set this
@@ -73,12 +75,13 @@ public class RTPConnector {
 //			receiver.startPlayer();
 			Thread t = new Thread(new StayAwake(), "Switchboard Server Lifeline");
 			t.start();
-		try {
-			sendStream();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+			try {
+				sendStream();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 
@@ -113,7 +116,7 @@ public class RTPConnector {
 
 		@Override
 		public void run() {
-			while(true){
+			while(hasNotRecievedQuitCommand){
 			//wheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 				try {
 					Thread.sleep(10000);
