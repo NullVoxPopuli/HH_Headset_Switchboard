@@ -68,9 +68,9 @@ public class ClientManager {
 
 			
 			macAddress = info.getCNAME().split("-")[1];
-			if(isMacInUse(macAddress)){
-				break;
-			}
+//			if(isMacInUse(macAddress)){
+//				break;
+//			}
 		}
 		System.out.println("MAC: " + macAddress);
 		clients.add(new Client(dsource, macAddress));

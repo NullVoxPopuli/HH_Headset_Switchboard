@@ -3,11 +3,7 @@ package edu.rosehulman;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Vector;
 
-import javax.media.CannotRealizeException;
 import javax.media.ControllerEvent;
 import javax.media.ControllerListener;
 import javax.media.DataSink;
@@ -15,11 +11,9 @@ import javax.media.Format;
 import javax.media.Manager;
 import javax.media.MediaException;
 import javax.media.MediaLocator;
-import javax.media.NoProcessorException;
 import javax.media.Player;
 import javax.media.Processor;
 import javax.media.ProcessorModel;
-import javax.media.RealizeCompleteEvent;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
@@ -32,9 +26,7 @@ import javax.media.rtp.event.NewReceiveStreamEvent;
 import javax.media.rtp.event.ReceiveStreamEvent;
 import javax.media.rtp.rtcp.SourceDescription;
 
-import com.sun.media.rtp.RTPLocalSourceInfo;
-import com.sun.media.rtp.RTPRemoteSourceInfo;
-import com.sun.media.rtp.RecvSSRCInfo;
+import com.sun.media.rtp.RTPSessionMgr;
 
 public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	public static final Format[] FORMATS = new Format[] { new AudioFormat(
@@ -257,13 +249,16 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	                 if (part != null) cname = part.getCNAME();
 	                 // get a handle over the ReceiveStream datasource
 	                 dsource = stream.getDataSource();
+	                 SessionAddress addr = ((RTPSessionMgr)((NewReceiveStreamEvent)event).getSessionManager()).getSessionAddress();
+	    	         if (dsource != null) ClientManager.addNewClientWithStream(dsource, this.mgr.getRemoteParticipants());
 
 	                 // create a player by passing datasource to the 
 	                 // Media Manager
 	                 newplayer = Manager.createPlayer(dsource);
+	                 newplayer.start();
+
 	                 sendStream();
 	                 //TODO: instead of start(), broadcast to clients
-	                 //newplayer.start();
 	                 System.out.println("created player " + newplayer);
 //	                 ((equip.ect.components.rtpviewer.RTPPlayer)newplayer).getAddress();
 //	                 System.out.println("Data Source Content Type: " + dsource.getContentType());
@@ -342,7 +337,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 //						}
 //					}
 //			}
-	         if (dsource != null) ClientManager.addNewClientWithStream(dsource, this.mgr.getRemoteParticipants());
 
 	}
 }
