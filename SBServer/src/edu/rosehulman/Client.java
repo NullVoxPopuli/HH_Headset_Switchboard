@@ -14,7 +14,7 @@ public class Client {
 	private Channel audience;
 	private String name;
 	private String macAddress;
-	private Player rtpPlayer;
+	private Object audioStream;
 
 	/**
 	 * The Audience is the list of clients that a client can talk to.
@@ -33,6 +33,24 @@ public class Client {
 	 */
 	public void setAudience(Channel audience) {
 		this.audience = audience;
+	}
+
+	/**
+	 * Sets the field called 'audioStream' to the given value.
+	 * @param audioStream The audioStream to set.
+	 */
+	public void setAudioStream(Object audioStream)
+	{
+		this.audioStream = audioStream;
+	}
+
+	/**
+	 * Returns the value of the field called 'audioStream'.
+	 * @return Returns the audioStream.
+	 */
+	public Object getAudioStream()
+	{
+		return this.audioStream;
 	}
 
 	/**
@@ -128,12 +146,12 @@ public class Client {
 	/**
 	 * 
 	 * Constructor for a client.
-	 * Directly sets the RTPPlayer
+	 * Directly sets the stream for which this client is associated with.
 	 *
-	 * @param RTPPlayer - an RTPPlayer object.
+	 * @param audioStream - an audio stream object.
 	 */
-	public Client(Player RTPPlayer) {
-		this.rtpPlayer = RTPPlayer;
+	public Client(Object audioStream) {
+		this.setAudioStream(audioStream);
 	}
 
 	/**

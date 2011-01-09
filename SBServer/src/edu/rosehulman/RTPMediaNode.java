@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.media.ControllerEvent;
 import javax.media.ControllerListener;
@@ -27,6 +28,10 @@ import javax.media.rtp.SessionManager;
 import javax.media.rtp.event.NewReceiveStreamEvent;
 import javax.media.rtp.event.ReceiveStreamEvent;
 import javax.media.rtp.rtcp.SourceDescription;
+
+import com.sun.media.rtp.RTPLocalSourceInfo;
+import com.sun.media.rtp.RTPRemoteSourceInfo;
+import com.sun.media.rtp.RecvSSRCInfo;
 
 public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	public static final Format[] FORMATS = new Format[] { new AudioFormat(
@@ -112,6 +117,10 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 
 	public SessionManager createManager(String address, int port, int ttl,
 			boolean listener) {
+		
+		System.out.println(address);
+	
+		
 		mgr = (SessionManager) new com.sun.media.rtp.RTPSessionMgr();
 
 		if (mgr == null)
@@ -164,17 +173,17 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 		return mgr;
 	}
 
+
 	@Override
 	public void update(ReceiveStreamEvent event) {
 	      Player newplayer = null;
-	 
-	         // find the sourceRTPSM for this event
+
+	      // find the sourceRTPSM for this event
 	         SessionManager source = (SessionManager)event.getSource();
-	 
 	         // create a new player if a new recvstream is detected
 	         if (event instanceof NewReceiveStreamEvent)
 	         {
-	             String cname = "Java Media Player";
+	             String cname = "Switchboard Server Player";
 	             ReceiveStream stream = null;
 	             
 	             try
@@ -194,12 +203,41 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	                 newplayer = Manager.createPlayer(dsource);
 	                 newplayer.start();
 	                 System.out.println("created player " + newplayer);
-	                 
-	                 System.out.println(newplayer.getControls().toString());
-	                 
+//	                 ((equip.ect.components.rtpviewer.RTPPlayer)newplayer).getAddress();
+//	                 System.out.println("Data Source Content Type: " + dsource.getContentType());
+//	                 System.out.println(source.generateCNAME());
+//	                 System.out.println(source.generateSSRC());
+//	                 System.out.println(source.getMulticastScope());
+//	                 for (Object r : source.getAllParticipants()) {
+////	                	 com.sun.media.rtp.RTPLocalSourceInfo cannot be cast to 
+////	                	 com.sun.media.rtp.RTPRemoteSourceInfo
+//	                	 RTPLocalSourceInfo t = (RTPLocalSourceInfo) r;
+//						System.out.println(t.getCNAME());
+//						System.out.println(t.getReports());
+//						System.out.println(t.getSourceDescription());
+//						System.out.println(t.getStreams());
+//					}
+//	                 System.out.println(source.getLocalSessionAddress());
+//	                 System.out.println(event);
+//	                 System.out.println(source.getPeers());
+//	                 for (Object r : source.getRemoteParticipants()) {
+//	                	 RTPLocalSourceInfo t = (RTPLocalSourceInfo)r;
+//							System.out.println(t.getCNAME());
+//							System.out.println(t.getReports());
+//							System.out.println(t.getSourceDescription());
+//							System.out.println(t.getStreams());
+//					}
+//	                System.out.println(source.getReceiveStreams());
+//	                System.out.println(source.getSessionAddress()); 
+//	                System.out.println(source.getDefaultSSRC());
+//	                System.out.println(event.getSessionManager().generateCNAME());
+//	                System.out.println(event.getSessionManager().getSessionAddress());
+//	                System.out.println(event.getReceiveStream().getParticipant());
+
 	             } catch (Exception e) {
 	                 System.err.println("NewReceiveStreamEvent exception " 
 	                                    + e.getMessage());
+	                 e.printStackTrace();
 	                 return;
 	             }
 	 
@@ -210,5 +248,36 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	            
 	             // send this player to player GUI
 	         }
+	         else{
+	        	 System.out.println(event.getParticipant());
+	         }
+	         
+//	         System.out.println(mgr.getPeers());
+//	         System.out.println(mgr.getAllParticipants());
+	         
+             for (Object r : mgr.getRemoteParticipants()) {
+            	 RTPRemoteSourceInfo t = (RTPRemoteSourceInfo)r;
+//					System.out.println(t.getCNAME()); // mac address
+//					System.out.println(t.getSourceDescription());
+//					System.out.println("source desc");
+//					for (Object o : t.getSourceDescription()) {
+//						SourceDescription sd = (SourceDescription)o;
+//						System.out.println(sd.getDescription());
+//						System.out.println(sd.getFrequency());
+//						System.out.println(sd.getType());
+//						System.out.println(sd.generateCNAME());
+//					}
+					for (Object o : t.getStreams()) {
+						if (o instanceof RecvSSRCInfo){
+							RecvSSRCInfo oo = (RecvSSRCInfo)o;
+							System.out.println(oo.getSenderReport());
+						}else if (o instanceof RTPRemoteSourceInfo){
+							RTPRemoteSourceInfo oo = (RTPRemoteSourceInfo)o;
+							System.out.println(oo.getCNAME());
+						}else{
+							System.err.println();
+						}
+					}
+			}
 	}
 }
