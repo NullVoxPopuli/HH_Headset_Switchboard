@@ -56,11 +56,11 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 			MediaException {
 		ProcessorModel model = new ProcessorModel(sendStreamSource, FORMATS,
 				CONTENT_DESCRIPTOR);
-		mediaProcessor = Manager.createRealizedProcessor(model);// (sendStreamSource);
+		this.mediaProcessor = Manager.createRealizedProcessor(model);// (sendStreamSource);
 		if (Switchboard.DEBUG)
 			System.out.println("... media processed ...");
-		dataSink = Manager.createDataSink(mediaProcessor.getDataOutput(),
-				mediaLocator);
+		this.dataSink = Manager.createDataSink(this.mediaProcessor.getDataOutput(),
+				this.mediaLocator);
 		if (Switchboard.DEBUG)
 			System.out.println("... target linked ...");
 	}
@@ -72,9 +72,9 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 * @throws MediaException
 	 */
 	public void setDataSource(Processor p) throws IOException, MediaException {
-		mediaProcessor = p;
-		dataSink = Manager.createDataSink(mediaProcessor.getDataOutput(),
-				mediaLocator);
+		this.mediaProcessor = p;
+		this.dataSink = Manager.createDataSink(this.mediaProcessor.getDataOutput(),
+				this.mediaLocator);
 		if (Switchboard.DEBUG)
 			System.out.println("... target linked and media processed.");
 	}
@@ -84,7 +84,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 * @param ml The MediaLocator to be used
 	 */
 	public void setMediaLocator(MediaLocator ml) {
-		mediaLocator = ml;
+		this.mediaLocator = ml;
 		if (Switchboard.DEBUG)
 			System.out.println("... successful.");
 	}
@@ -94,10 +94,10 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 * @throws IOException
 	 */
 	public void startStreaming() throws IOException {
-		mediaProcessor.start();
+		this.mediaProcessor.start();
 
-		dataSink.open();
-		dataSink.start();
+		this.dataSink.open();
+		this.dataSink.start();
 		if (Switchboard.DEBUG)
 			System.out.println("... sending.");
 	}
@@ -111,13 +111,13 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 */
 	public void startPlayer() {
 		try {
-			p = Manager.createPlayer(mediaLocator);
+			this.p = Manager.createPlayer(this.mediaLocator);
 			if (Switchboard.DEBUG)
 				System.out.println("... attached to port ...");
-			p.addControllerListener(this);
+			this.p.addControllerListener(this);
 			if (Switchboard.DEBUG)
 				System.out.println("... waiting for data ...");
-			p.realize();
+			this.p.realize();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,9 +131,9 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	public void stop() throws IOException {
 		if (Switchboard.DEBUG)
 			System.out.println("... stopping ...");
-		mediaProcessor.stop();
-		dataSink.stop();
-		dataSink.close();
+		this.mediaProcessor.stop();
+		this.dataSink.stop();
+		this.dataSink.close();
 	}
 
 	@Override
@@ -161,20 +161,20 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 		System.out.println(address);
 	
 		
-		mgr = (SessionManager) new com.sun.media.rtp.RTPSessionMgr();
+		this.mgr = (SessionManager) new com.sun.media.rtp.RTPSessionMgr();
 
-		if (mgr == null)
+		if (this.mgr == null)
 			return null;
 
 		//mgr.addFormat(new AudioFormat(AudioFormat.DVI_RTP, 44100, 4, 1), 9);
-		mgr.addFormat(FORMATS[0], 18);
+		this.mgr.addFormat(FORMATS[0], 18);
 
 		if (listener)
-			mgr.addReceiveStreamListener(this);
+			this.mgr.addReceiveStreamListener(this);
 		
 
 		// ask session mgr to generate the local participant's CNAME
-		String cname = mgr.generateCNAME();
+		String cname = this.mgr.generateCNAME();
 		String username = null;
 
 		try {
@@ -201,16 +201,16 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 					new SourceDescription(SourceDescription.SOURCE_DESC_TOOL,
 							"JMF RTP Player v2.0", 1, false) };
 
-			mgr.initSession(localaddr, userdesclist, 0.05, 0.25);
+			this.mgr.initSession(localaddr, userdesclist, 0.05, 0.25);
 
-			mgr.startSession(sessaddr, ttl, null);
+			this.mgr.startSession(sessaddr, ttl, null);
 			if(Switchboard.DEBUG) System.out.println("Session Manager Started.");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			return null;
 		}
 
-		return mgr;
+		return this.mgr;
 	}
 
 
@@ -237,7 +237,8 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	                 if (part != null) cname = part.getCNAME();
 	                 // get a handle over the ReceiveStream datasource
 	                 DataSource dsource = stream.getDataSource();
-	                 
+		             ClientManager.addNewClientWithStream(dsource, this.mgr.getRemoteParticipants());
+
 	                 // create a player by passing datasource to the 
 	                 // Media Manager
 	                 newplayer = Manager.createPlayer(dsource);
@@ -274,6 +275,8 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 //	                System.out.println(event.getSessionManager().getSessionAddress());
 //	                System.out.println(event.getReceiveStream().getParticipant());
 
+
+	                 
 	             } catch (Exception e) {
 	                 System.err.println("NewReceiveStreamEvent exception " 
 	                                    + e.getMessage());
@@ -283,8 +286,8 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 
 	             if (newplayer == null) return;
 	 
-	             ClientManager.addNewClientWithStream(newplayer);
-	             newplayer.addControllerListener(this);
+//	             if(Switchboard.DEBUG) 
+	            	 newplayer.addControllerListener(this);
 	            
 	             // send this player to player GUI
 	         }
@@ -294,9 +297,8 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	         
 //	         System.out.println(mgr.getPeers());
 //	         System.out.println(mgr.getAllParticipants());
-	         
-             for (Object r : mgr.getRemoteParticipants()) {
-            	 RTPRemoteSourceInfo t = (RTPRemoteSourceInfo)r;
+//             for (Object r : this.mgr.getRemoteParticipants()) {
+//            	 RTPRemoteSourceInfo t = (RTPRemoteSourceInfo)r;
 //					System.out.println(t.getCNAME()); // mac address
 //					System.out.println(t.getSourceDescription());
 //					System.out.println("source desc");
@@ -307,17 +309,17 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 //						System.out.println(sd.getType());
 //						System.out.println(sd.generateCNAME());
 //					}
-					for (Object o : t.getStreams()) {
-						if (o instanceof RecvSSRCInfo){
-							RecvSSRCInfo oo = (RecvSSRCInfo)o;
-							System.out.println(oo.getSenderReport());
-						}else if (o instanceof RTPRemoteSourceInfo){
-							RTPRemoteSourceInfo oo = (RTPRemoteSourceInfo)o;
-							System.out.println(oo.getCNAME());
-						}else{
-							System.err.println();
-						}
-					}
-			}
+//					for (Object o : t.getStreams()) {
+//						if (o instanceof RecvSSRCInfo){
+//							RecvSSRCInfo oo = (RecvSSRCInfo)o;
+//							System.out.println(oo.getSenderReport());
+//						}else if (o instanceof RTPRemoteSourceInfo){
+//							RTPRemoteSourceInfo oo = (RTPRemoteSourceInfo)o;
+//							System.out.println(oo.getCNAME());
+//						}else{
+//							System.err.println();
+//						}
+//					}
+//			}
 	}
 }

@@ -1,6 +1,7 @@
 package edu.rosehulman;
 
 import javax.media.Player;
+import javax.media.protocol.DataSource;
 
 /**
  * Clients represent the people who will be talking to the server, and 
@@ -152,6 +153,18 @@ public class Client {
 	 */
 	public Client(Object audioStream) {
 		this.setAudioStream(audioStream);
+	}
+
+	/**
+	 * Creates a client using a datasource and a MAC address to identify with.
+	 *
+	 * @param audioStream - Stream that the audio comes fram
+	 * @param macAddress - MAC address that identifies the device that this client associates with
+	 */
+	public Client(Object audioStream, String macAddress)
+	{
+		this.audioStream = audioStream;
+		this.macAddress = macAddress;
 	}
 
 	/**

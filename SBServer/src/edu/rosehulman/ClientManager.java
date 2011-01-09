@@ -1,7 +1,11 @@
 package edu.rosehulman;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.media.Player;
+import javax.media.protocol.DataSource;
+
+import com.sun.media.rtp.RTPRemoteSourceInfo;
 
 public class ClientManager {
 
@@ -42,5 +46,45 @@ public class ClientManager {
 
 	public static void addNewClientWithStream(Player RTPPlayer) {
 		clients.add(new Client(RTPPlayer));
+	}
+
+	/**
+	 * Add a client with a streamto the list of clients
+	 *
+	 * @param dsource
+	 * @param remoteParticipants
+	 */
+	public static void addNewClientWithStream(DataSource dsource, Vector remoteParticipants)
+	{
+		if(Switchboard.DEBUG) System.out.println("Adding Client to the ClientManager...");
+		String macAddress = "";
+		// hack through remoteParticipants to get the new MAC
+		for (Object o : remoteParticipants)
+		{
+			RTPRemoteSourceInfo info = (RTPRemoteSourceInfo)o;
+			System.out.println(info.getCNAME());
+			macAddress = info.getCNAME().split("-")[1];
+			if(isMacInUse(macAddress)){
+				break;
+			}
+		}
+		System.out.println(macAddress);
+		clients.add(new Client(dsource, macAddress));
+		
+	}
+
+	/**
+	 * Verifies that the requested mac address isn't in use.
+	 *
+	 * @param macAddress formatted 0a1b2c3d4e5f
+	 * @return true if the MAC has not been used before. false otherwise.
+	 */
+	private static boolean isMacInUse(String macAddress)
+	{
+		for (Client c : clients)
+		{
+			if(c.getMacAddress().equals(macAddress)) return false;
+		}
+		return true;
 	}
 }
