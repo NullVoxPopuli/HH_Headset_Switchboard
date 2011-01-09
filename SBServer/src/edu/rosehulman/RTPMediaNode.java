@@ -2,6 +2,7 @@ package edu.rosehulman;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import javax.media.ControllerEvent;
@@ -29,7 +30,7 @@ import javax.media.rtp.rtcp.SourceDescription;
 
 public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	public static final Format[] FORMATS = new Format[] { new AudioFormat(
-			AudioFormat.MPEG_RTP) };
+			AudioFormat.MPEG_RTP, 48000, 16, 2) };
 	public static final ContentDescriptor CONTENT_DESCRIPTOR = new ContentDescriptor(
 			ContentDescriptor.RAW_RTP);
 
@@ -116,7 +117,8 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 		if (mgr == null)
 			return null;
 
-		mgr.addFormat(new AudioFormat(AudioFormat.DVI_RTP, 44100, 4, 1), 18);
+		//mgr.addFormat(new AudioFormat(AudioFormat.DVI_RTP, 44100, 4, 1), 9);
+		mgr.addFormat(FORMATS[0], 18);
 
 		if (listener)
 			mgr.addReceiveStreamListener(this);
@@ -184,7 +186,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	                 Participant part = stream.getParticipant();
 	 
 	                 if (part != null) cname = part.getCNAME();
-	 
 	                 // get a handle over the ReceiveStream datasource
 	                 DataSource dsource = stream.getDataSource();
 	                 
@@ -193,6 +194,9 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	                 newplayer = Manager.createPlayer(dsource);
 	                 newplayer.start();
 	                 System.out.println("created player " + newplayer);
+	                 
+	                 System.out.println(newplayer.getControls().toString());
+	                 
 	             } catch (Exception e) {
 	                 System.err.println("NewReceiveStreamEvent exception " 
 	                                    + e.getMessage());
@@ -201,7 +205,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 
 	             if (newplayer == null) return;
 	 
-	             //playerlist.add(newplayer);
 	             ClientManager.addNewClientWithStream(newplayer);
 	             newplayer.addControllerListener(this);
 	            

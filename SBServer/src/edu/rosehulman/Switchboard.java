@@ -1,4 +1,6 @@
 package edu.rosehulman;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 
@@ -9,10 +11,18 @@ public class Switchboard {
 	private static RTPConnector rtpConnector = new RTPConnector();
 	
 	// these are things that can change real time
-	public static String serverIP = "137.112.104.107";
+	public static String serverIP = "0.0.0.0"; // backup incase the OS can't figure out it's IP
 	public static int serverPort = 13378;
 	
 	public static void main(String[] args){
+		
+		try {
+			serverIP = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("We will need a way to handle this error easily for the user");
+		}
 		// Since Client Manager is a singleton, we shoud make it static, so we don't have 
 		// multiple copies.
 		//ArrayList<Client> clients = getClients();
