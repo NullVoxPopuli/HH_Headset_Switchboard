@@ -2,12 +2,18 @@ package edu.rosehulman;
 
 import javax.media.Player;
 
+/**
+ * Clients represent the people who will be talking to the server, and 
+ * who will be receiving streams from other clients.
+ *
+ * @author Ben Kehm, L. Preston Sego III, Kenny Skaggs, Bennie Waters
+ *         Created Jan 9, 2011.
+ */
 public class Client {
 
 	private Channel audience;
 	private String name;
 	private String macAddress;
-	private String port;
 	private Player rtpPlayer;
 
 	/**
@@ -92,14 +98,6 @@ public class Client {
 		return result;
 	}
 
-	public String getPort() {
-		return this.port;
-	}
-
-	public void setPort(String port) {
-		this.port = port;
-	}
-
 	/**
 	 * 
 	 * Constructor for a Client.
@@ -107,10 +105,9 @@ public class Client {
 	 *
 	 * @param name - the name identifying this client
 	 * @param mac - the MAC address of this client. Formatted 0a1b2c3d4e5f.
-	 * @param port
 	 */
-	public Client(String name, String mac, String port) {
-		this(new Channel(), name, mac, port);
+	public Client(String name, String mac) {
+		this(new Channel(), name, mac);
 	}
 	
 	/**
@@ -122,11 +119,10 @@ public class Client {
 	 * @param mac - the MAC address of this client. Formatted 0a1b2c3d4e5f
 	 * @param port
 	 */
-	public Client(Channel audience, String name, String mac, String port) {
+	public Client(Channel audience, String name, String mac) {
 		this.audience = audience;
 		this.name = name;
 		this.macAddress = mac;
-		this.port = port;
 	}
 
 	/**
