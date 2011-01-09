@@ -115,7 +115,9 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 			RTPMediaNode broadcaster2 = new RTPMediaNode();
 			broadcaster2.setMediaLocator(new MediaLocator("rtp://"+bennieIP+":"+benniePort+"/audio"));
 			Processor p2 = Manager.createRealizedProcessor(new ProcessorModel(new MediaLocator("rtp://"+kennyIP+":"+kennyPort+"/audio"), FORMATS, new ContentDescriptor(ContentDescriptor.RAW_RTP)));
-			broadcaster2.setDataSource(p2);
+			Client bennie = ClientManager.getClients().get(1);
+			DataSource d2 = (DataSource)bennie.getAudioStream();
+			broadcaster2.setDataSource(d2);
 			broadcaster2.startStreaming();
 	}
 
