@@ -49,9 +49,9 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	private SessionManager mgr;
 	
 	String kennyIP = "137.112.104.158";
-	String kennyPort = "13378";
+	String kennyPort = "13340";
 	String bennieIP = "137.112.104.163";
-	String benniePort = "13378";
+	String benniePort = "13376";
 	
 	
 
@@ -95,7 +95,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	public void setMediaLocator(MediaLocator ml) {
 		this.mediaLocator = ml;
 		if (Switchboard.DEBUG)
-			System.out.println("... successful.");
+			System.out.println("Creating the media locator was successful.");
 	}
 
 	/**
@@ -236,6 +236,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	@Override
 	public void update(ReceiveStreamEvent event) {
 	      Player newplayer = null;
+	      DataSource dsource = null;
 
 	      // find the sourceRTPSM for this event
 	         SessionManager source = (SessionManager)event.getSource();
@@ -255,8 +256,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 
 	                 if (part != null) cname = part.getCNAME();
 	                 // get a handle over the ReceiveStream datasource
-	                 DataSource dsource = stream.getDataSource();
-		             ClientManager.addNewClientWithStream(dsource, this.mgr.getRemoteParticipants());
+	                 dsource = stream.getDataSource();
 
 	                 // create a player by passing datasource to the 
 	                 // Media Manager
@@ -313,7 +313,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	             // send this player to player GUI
 	         }
 	         else{
-	        	 System.out.println(event.getParticipant());
+	        	 System.out.println("Don't know what to do with this: " + event.getParticipant());
 	         }
 	         
 //	         System.out.println(mgr.getPeers());
@@ -342,5 +342,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 //						}
 //					}
 //			}
+	         if (dsource != null) ClientManager.addNewClientWithStream(dsource, this.mgr.getRemoteParticipants());
+
 	}
 }

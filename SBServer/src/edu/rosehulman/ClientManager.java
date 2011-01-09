@@ -4,8 +4,10 @@ import java.util.Vector;
 
 import javax.media.Player;
 import javax.media.protocol.DataSource;
+import javax.media.rtp.rtcp.SourceDescription;
 
 import com.sun.media.rtp.RTPRemoteSourceInfo;
+import com.sun.media.rtp.RecvSSRCInfo;
 
 public class ClientManager {
 
@@ -62,13 +64,15 @@ public class ClientManager {
 		for (Object o : remoteParticipants)
 		{
 			RTPRemoteSourceInfo info = (RTPRemoteSourceInfo)o;
-			System.out.println(info.getCNAME());
+			System.out.println("CNAME: " + info.getCNAME());
+
+			
 			macAddress = info.getCNAME().split("-")[1];
 			if(isMacInUse(macAddress)){
 				break;
 			}
 		}
-		System.out.println(macAddress);
+		System.out.println("MAC: " + macAddress);
 		clients.add(new Client(dsource, macAddress));
 		
 	}
