@@ -1,9 +1,14 @@
 package edu.rosehulman;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.media.Control;
 import javax.media.Player;
 import javax.media.protocol.DataSource;
+import javax.media.rtp.RTPControl;
 import javax.media.rtp.rtcp.SourceDescription;
 
 import com.sun.media.rtp.RTPRemoteSourceInfo;
@@ -56,22 +61,25 @@ public class ClientManager {
 	 * @param dsource
 	 * @param remoteParticipants
 	 */
-	public static void addNewClientWithStream(DataSource dsource, Vector remoteParticipants)
+	public static void addNewClientWithStream(DataSource dsource)
 	{
 		if(Switchboard.DEBUG) System.out.println("Adding Client to the ClientManager...");
 		String macAddress = "";
-		// hack through remoteParticipants to get the new MAC
-		for (Object o : remoteParticipants)
+		Inet4Address net;
+		try
 		{
-			RTPRemoteSourceInfo info = (RTPRemoteSourceInfo)o;
-			System.out.println("CNAME: " + info.getCNAME());
+			net = (Inet4Address) InetAddress.getByName("1828261086");
+			Object c = 2+2;
 
-			
-			macAddress = info.getCNAME().split("-")[1];
-//			if(isMacInUse(macAddress)){
-//				break;
-//			}
 		}
+		catch (UnknownHostException exception)
+		{
+			// TODO Auto-generated catch-block stub.
+			exception.printStackTrace();
+		}
+
+		// DataSource.rtpcontrol.stream.address (Inet4Address)
+		Object o = ((RTPControl[])dsource.getControls())[0];
 		System.out.println("MAC: " + macAddress);
 		clients.add(new Client(dsource, macAddress));
 		

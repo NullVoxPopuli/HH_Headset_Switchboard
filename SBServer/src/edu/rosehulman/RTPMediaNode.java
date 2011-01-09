@@ -2,7 +2,9 @@ package edu.rosehulman;
 
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 import javax.media.ControllerEvent;
 import javax.media.ControllerListener;
@@ -221,6 +223,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	}
 
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void update(ReceiveStreamEvent event) {
 	      Player newplayer = null;
@@ -245,13 +248,16 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	                 if (part != null) cname = part.getCNAME();
 	                 // get a handle over the ReceiveStream datasource
 	                 dsource = stream.getDataSource();
-	                 SessionAddress addr = ((RTPSessionMgr)((NewReceiveStreamEvent)event).getSessionManager()).getSessionAddress();
-	    	         if (dsource != null) ClientManager.addNewClientWithStream(dsource, this.mgr.getRemoteParticipants());
+	                 @SuppressWarnings("unused")
+					SessionAddress addr = ((RTPSessionMgr)((NewReceiveStreamEvent)event).getSessionManager()).getSessionAddress();
+	    	         if (dsource != null) ClientManager.addNewClientWithStream(dsource);
 
 	                 // create a player by passing datasource to the 
 	                 // Media Manager
 	                 newplayer = Manager.createPlayer(dsource);
-	                 //newplayer.start();
+	                 @SuppressWarnings("unused")
+					Inet4Address net = (Inet4Address) InetAddress.getByName("1828261086");
+	               //  newplayer.start();
 
 	                 if (ClientManager.getClients().size() == 2) sendStream();
 	                 //TODO: instead of start(), broadcast to clients
