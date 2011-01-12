@@ -4,6 +4,10 @@ package edu.rosehulman;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.util.Vector;
 
 import javax.media.ControllerEvent;
 import javax.media.ControllerListener;
@@ -14,10 +18,12 @@ import javax.media.MediaException;
 import javax.media.MediaLocator;
 import javax.media.Player;
 import javax.media.Processor;
+import javax.media.RealizeCompleteEvent;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
 import javax.media.rtp.Participant;
+import javax.media.rtp.RTPStream;
 import javax.media.rtp.ReceiveStream;
 import javax.media.rtp.ReceiveStreamListener;
 import javax.media.rtp.SessionAddress;
@@ -29,9 +35,10 @@ import javax.media.rtp.event.ReceiveStreamEvent;
 import javax.media.rtp.event.SessionEvent;
 import javax.media.rtp.rtcp.SourceDescription;
 
-import com.sun.media.rtp.RTPSessionMgr;
+import com.sun.media.rtp.RTPRemoteSourceInfo;
+import com.sun.media.rtp.RecvSSRCInfo;
 
-public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, SessionListener {
+public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, SessionListener  {
 	public static final Format[] FORMATS = new Format[] { new AudioFormat(
 			AudioFormat.MPEG_RTP, 48000, 16, 2)};
 	public static final Format[] FORMATS1 = new Format[] { new AudioFormat(
@@ -44,13 +51,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 	private Processor mediaProcessor = null;
 	private Player p;
 	private SessionManager mgr;
-	
-	String kennyIP = "137.112.104.158";
-	String kennyPort = "13340";
-	String bennieIP = "137.112.104.163";
-	String benniePort = "13376";
-	
-	
 
 	/**
 	 * Specifies a ProcessorModel for the RTPMediaNode using a DataSource
@@ -101,22 +101,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 		if (Switchboard.DEBUG)
 			System.out.println("... sending.");
 	}
-	
-	public void sendStream() throws Exception{
-			RTPMediaNode broadcaster = new RTPMediaNode();
-			broadcaster.setMediaLocator(new MediaLocator("rtp://"+kennyIP+":"+kennyPort+"/audio"));
-			Client kenny = ClientManager.getClients().get(0);
-			DataSource d = (DataSource)kenny.getAudioStream(); 
-			broadcaster.setDataSource(d);
-			broadcaster.startStreaming();
-			
-			RTPMediaNode broadcaster2 = new RTPMediaNode();
-			broadcaster2.setMediaLocator(new MediaLocator("rtp://"+bennieIP+":"+benniePort+"/audio"));
-			Client bennie = ClientManager.getClients().get(1);
-			DataSource d2 = (DataSource)bennie.getAudioStream();
-			broadcaster2.setDataSource(d2);
-			broadcaster2.startStreaming();
-	}
 
 	/**
 	 * Begin playing sound
@@ -150,13 +134,12 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 
 	@Override
 	public void controllerUpdate(ControllerEvent event) {
-//		if (event instanceof RealizeCompleteEvent) {
-//			if (Switchboard.DEBUG)
-//				System.out.println("Data recieved ...");
-//			p.start();
-//			if (Switchboard.DEBUG)
-//				System.out.println("... playing stream.");
-//		}
+		if (event instanceof RealizeCompleteEvent) {
+			if (Switchboard.DEBUG)
+				System.out.println("Data recieved ...");
+			if (Switchboard.DEBUG)
+				System.out.println("... playing stream.");
+		}
 	}
 
 	/**
@@ -167,7 +150,8 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 	 * @param listener
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
+	 	@SuppressWarnings("deprecation")
+	 
 	public SessionManager createManager(String address, int port, int ttl,
 			boolean listener) {
 		
@@ -228,76 +212,34 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 		return this.mgr;
 	}
 
-
 	@SuppressWarnings("deprecation")
 	@Override
 	public void update(ReceiveStreamEvent event) {
-	      Player newplayer = null;
-	      DataSource dsource = null;
+	      Player newplayer;
+	      DataSource dsource;
 
-	      // find the sourceRTPSM for this event
-	         SessionManager source = (SessionManager)event.getSource();
 	         // create a new player if a new recvstream is detected
 	         if (event instanceof NewReceiveStreamEvent)
 	         {
-	             String cname = "Switchboard Server Player";
-	             ReceiveStream stream = null;
+	             ReceiveStream stream;
 	             
 	             try
 	             {
 	                 // get a handle over the ReceiveStream
-	                 stream =((NewReceiveStreamEvent)event)
-	                         .getReceiveStream();
+	                 stream = ((NewReceiveStreamEvent)event).getReceiveStream();
 	 
-	                 Participant part = stream.getParticipant();
 	 
-	                 if (part != null) cname = part.getCNAME();
 	                 // get a handle over the ReceiveStream datasource
 	                 dsource = stream.getDataSource();
-	                 @SuppressWarnings("unused")
-					SessionAddress addr = ((RTPSessionMgr)((NewReceiveStreamEvent)event).getSessionManager()).getSessionAddress();
 	    	         if (dsource != null) ClientManager.addNewClientWithStream(dsource);
 
 	                 // create a player by passing datasource to the 
 	                 // Media Manager
 	                 newplayer = Manager.createPlayer(dsource);
-	                 @SuppressWarnings("unused")
-					Inet4Address net = (Inet4Address) InetAddress.getByName("1828261086");
 	                 newplayer.start();
 
-	                 if (ClientManager.getClients().size() == 2) sendStream();
 	                 //TODO: instead of start(), broadcast to clients
 	                 System.out.println("created player " + newplayer);
-//	                 ((equip.ect.components.rtpviewer.RTPPlayer)newplayer).getAddress();
-//	                 System.out.println("Data Source Content Type: " + dsource.getContentType());
-//	                 System.out.println(source.generateCNAME());
-//	                 System.out.println(source.generateSSRC());
-//	                 System.out.println(source.getMulticastScope());
-//	                 for (Object r : source.getAllParticipants()) {
-////	                	 com.sun.media.rtp.RTPLocalSourceInfo cannot be cast to 
-////	                	 com.sun.media.rtp.RTPRemoteSourceInfo
-//	                	 RTPLocalSourceInfo t = (RTPLocalSourceInfo) r;
-//						System.out.println(t.getCNAME());
-//						System.out.println(t.getReports());
-//						System.out.println(t.getSourceDescription());
-//						System.out.println(t.getStreams());
-//					}
-//	                 System.out.println(source.getLocalSessionAddress());
-//	                 System.out.println(event);
-//	                 System.out.println(source.getPeers());
-//	                 for (Object r : source.getRemoteParticipants()) {
-//	                	 RTPLocalSourceInfo t = (RTPLocalSourceInfo)r;
-//							System.out.println(t.getCNAME());
-//							System.out.println(t.getReports());
-//							System.out.println(t.getSourceDescription());
-//							System.out.println(t.getStreams());
-//					}
-//	                System.out.println(source.getReceiveStreams());
-//	                System.out.println(source.getSessionAddress()); 
-//	                System.out.println(source.getDefaultSSRC());
-//	                System.out.println(event.getSessionManager().generateCNAME());
-//	                System.out.println(event.getSessionManager().getSessionAddress());
-//	                System.out.println(event.getReceiveStream().getParticipant());
 
 
 	                 
@@ -310,41 +252,12 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 	 
 	             if (newplayer == null) return;
 	 
-//	             if(Switchboard.DEBUG) 
 	            	 newplayer.addControllerListener(this);
 	            
-	             // send this player to player GUI
 	         }
 	         else{
 	        	 System.out.println("Don't know what to do with this: " + event.getParticipant());
 	         }
-	         
-//	         System.out.println(mgr.getPeers());
-//	         System.out.println(mgr.getAllParticipants());
-//             for (Object r : this.mgr.getRemoteParticipants()) {
-//            	 RTPRemoteSourceInfo t = (RTPRemoteSourceInfo)r;
-//					System.out.println(t.getCNAME()); // mac address
-//					System.out.println(t.getSourceDescription());
-//					System.out.println("source desc");
-//					for (Object o : t.getSourceDescription()) {
-//						SourceDescription sd = (SourceDescription)o;
-//						System.out.println(sd.getDescription());
-//						System.out.println(sd.getFrequency());
-//						System.out.println(sd.getType());
-//						System.out.println(sd.generateCNAME());
-//					}
-//					for (Object o : t.getStreams()) {
-//						if (o instanceof RecvSSRCInfo){
-//							RecvSSRCInfo oo = (RecvSSRCInfo)o;
-//							System.out.println(oo.getSenderReport());
-//						}else if (o instanceof RTPRemoteSourceInfo){
-//							RTPRemoteSourceInfo oo = (RTPRemoteSourceInfo)o;
-//							System.out.println(oo.getCNAME());
-//						}else{
-//							System.err.println();
-//						}
-//					}
-//			}
 
 	}
 
@@ -355,6 +268,47 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 			
 			NewParticipantEvent participantEvent = (NewParticipantEvent) event;
 			Participant participant = participantEvent.getParticipant();
+            System.err.println("  - A new participant had just joined: " + participant.getCNAME()); 
+            try
+			{
+				System.out.println("ip: " + InetAddress.getAllByName(participant.getCNAME().split("@")[1]));
+			}
+			catch (UnknownHostException exception)
+			{
+				// TODO Auto-generated catch-block stub.
+				exception.printStackTrace();
+			}
+//            try
+//			{
+//				System.out.println(Inet4Address.getLocalHost());
+//				InetAddress[] a = InetAddress.getAllByName(InetAddress.getLocalHost().toString().split("/")[0]);
+//				for (Object b : a)
+//				{
+//					System.out.println(b);
+//				}
+//			}
+//			catch (UnknownHostException exception)
+//			{
+//				// TODO Auto-generated catch-block stub.
+//				exception.printStackTrace();
+//			}
+//            Vector streams = participant.getStreams();
+//            if (streams.size() > 0){
+//	            try
+//				{         
+//	            	Object a =  (Inet4Address) (((RTPStream)streams.get(0)).getSenderReport().getSSRC());
+//	            	DataSource dS = ((RTPStream) streams.get(0)).getDataSource();
+//	            	MediaLocator mL = dS.getLocator();
+//					System.err.println("  - IP: " + mL.getURL());
+//				}
+//				catch (MalformedURLException exception)
+//				{
+//					// TODO Auto-generated catch-block stub.
+//					exception.printStackTrace();
+//				}
+//            }
+            
+            	
 		}
 	}
 }
