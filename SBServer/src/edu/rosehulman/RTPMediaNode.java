@@ -271,7 +271,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
             System.err.println("  - A new participant had just joined: " + participant.getCNAME()); 
             try
 			{
-				System.out.println("ip: " + InetAddress.getAllByName(participant.getCNAME().split("@")[1]));
+				System.out.println("ip: " + InetAddress.getByName(participant.getCNAME()));
 			}
 			catch (UnknownHostException exception)
 			{

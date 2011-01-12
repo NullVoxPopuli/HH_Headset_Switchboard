@@ -53,8 +53,7 @@ public class RTPConnector {
 			System.out.println("Trying to get data from " + Switchboard.serverIP + 
 													":" + Switchboard.serverPort + "/audio");
 //			receiver.startPlayer();
-			Thread t = new Thread(new StayAwake(), "Switchboard Server Lifeline");
-			t.start();
+
 	}
 	
 
@@ -84,24 +83,6 @@ public class RTPConnector {
 		
 	}
 	
-	
-	public class StayAwake implements Runnable{
-
-		@Override
-		public void run() {
-			while(hasNotRecievedQuitCommand){
-			//wheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		}
-		
-	}	
 }
 
 
