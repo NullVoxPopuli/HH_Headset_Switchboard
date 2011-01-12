@@ -4,7 +4,6 @@ package edu.rosehulman;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 
 import javax.media.ControllerEvent;
 import javax.media.ControllerListener;
@@ -15,7 +14,6 @@ import javax.media.MediaException;
 import javax.media.MediaLocator;
 import javax.media.Player;
 import javax.media.Processor;
-import javax.media.ProcessorModel;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
@@ -23,16 +21,21 @@ import javax.media.rtp.Participant;
 import javax.media.rtp.ReceiveStream;
 import javax.media.rtp.ReceiveStreamListener;
 import javax.media.rtp.SessionAddress;
+import javax.media.rtp.SessionListener;
 import javax.media.rtp.SessionManager;
+import javax.media.rtp.event.NewParticipantEvent;
 import javax.media.rtp.event.NewReceiveStreamEvent;
 import javax.media.rtp.event.ReceiveStreamEvent;
+import javax.media.rtp.event.SessionEvent;
 import javax.media.rtp.rtcp.SourceDescription;
 
 import com.sun.media.rtp.RTPSessionMgr;
 
-public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
+public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, SessionListener {
 	public static final Format[] FORMATS = new Format[] { new AudioFormat(
-			AudioFormat.MPEG_RTP, 48000, 16, 2) };
+			AudioFormat.MPEG_RTP, 48000, 16, 2)};
+	public static final Format[] FORMATS1 = new Format[] { new AudioFormat(
+			AudioFormat.LINEAR)};
 	public static final ContentDescriptor CONTENT_DESCRIPTOR = new ContentDescriptor(
 			ContentDescriptor.RAW_RTP);
 
@@ -164,6 +167,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	 * @param listener
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public SessionManager createManager(String address, int port, int ttl,
 			boolean listener) {
 		
@@ -171,7 +175,6 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	
 		
 		this.mgr = (SessionManager) new com.sun.media.rtp.RTPSessionMgr();
-
 		if (this.mgr == null)
 			return null;
 
@@ -179,7 +182,10 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 		this.mgr.addFormat(FORMATS[0], 18);
 
 		if (listener)
+		{
 			this.mgr.addReceiveStreamListener(this);
+			this.mgr.addSessionListener(this);
+		}
 		
 
 		// ask session mgr to generate the local participant's CNAME
@@ -257,7 +263,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 	                 newplayer = Manager.createPlayer(dsource);
 	                 @SuppressWarnings("unused")
 					Inet4Address net = (Inet4Address) InetAddress.getByName("1828261086");
-	               //  newplayer.start();
+	                 newplayer.start();
 
 	                 if (ClientManager.getClients().size() == 2) sendStream();
 	                 //TODO: instead of start(), broadcast to clients
@@ -340,5 +346,15 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener {
 //					}
 //			}
 
+	}
+
+	@Override
+	public void update(SessionEvent event) {
+		if (event instanceof NewParticipantEvent)
+		{
+			
+			NewParticipantEvent participantEvent = (NewParticipantEvent) event;
+			Participant participant = participantEvent.getParticipant();
+		}
 	}
 }
