@@ -8,6 +8,7 @@ import edu.rosehulman.net_control.ControlListener;
 
 public class Switchboard {
 	public static final boolean DEBUG = true;
+
 	
 	private static ClientManager manager;
 	private static RTPConnector rtpConnector = new RTPConnector();
@@ -16,6 +17,8 @@ public class Switchboard {
 
 	public static String serverIP = "0.0.0.0"; // backup incase the OS can't figure out its IP
 	public static int serverPort = 13378;
+	public static int	controlPort	= serverPort + 2;
+
 	
 	public static void main(String[] args){
 		

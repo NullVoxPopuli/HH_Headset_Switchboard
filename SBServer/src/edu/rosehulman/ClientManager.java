@@ -65,22 +65,10 @@ public class ClientManager {
 	{
 		if(Switchboard.DEBUG) System.out.println("Adding Client to the ClientManager...");
 		String macAddress = "";
-		Inet4Address net;
-		try
-		{
-			net = (Inet4Address) InetAddress.getByName("1828261086");
-			Object c = 2+2;
 
-		}
-		catch (UnknownHostException exception)
-		{
-			// TODO Auto-generated catch-block stub.
-			exception.printStackTrace();
-		}
 
 		// DataSource.rtpcontrol.stream.address (Inet4Address)
-		Object o = ((RTPControl[])dsource.getControls())[0];
-		System.out.println("MAC: " + macAddress);
+
 		clients.add(new Client(dsource, macAddress));
 		
 	}

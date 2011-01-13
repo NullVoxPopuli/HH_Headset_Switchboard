@@ -154,10 +154,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 	 
 	public SessionManager createManager(String address, int port, int ttl,
 			boolean listener) {
-		
-		System.out.println(address);
-	
-		
+	 		
 		this.mgr = (SessionManager) new com.sun.media.rtp.RTPSessionMgr();
 		if (this.mgr == null)
 			return null;
@@ -275,8 +272,7 @@ public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, 
 			}
 			catch (UnknownHostException exception)
 			{
-				// TODO Auto-generated catch-block stub.
-				exception.printStackTrace();
+				System.err.println(exception.getClass() + " :: " + exception.getMessage());
 			}
 //            try
 //			{

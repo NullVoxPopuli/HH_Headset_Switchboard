@@ -37,7 +37,7 @@ public class RTPConnector {
 		
 //		receiver.setMediaLocator(new MediaLocator("rtp://" + Switchboard.serverIP + 
 //													":" + Switchboard.serverPort + "/audio"));
-		mgr = receiver.createManager(Switchboard.serverIP, Switchboard.serverPort, 100, true);
+		this.mgr = this.receiver.createManager(Switchboard.serverIP, Switchboard.serverPort, 100, true);
 		
 		
 		
@@ -49,9 +49,9 @@ public class RTPConnector {
 	 */
 	public void start(){
 		// Start Reading (or listening... meh)
-		if(Switchboard.DEBUG )
-			System.out.println("Trying to get data from " + Switchboard.serverIP + 
-													":" + Switchboard.serverPort + "/audio");
+//		if(Switchboard.DEBUG )
+//			System.out.println("Trying to get data from " + Switchboard.serverIP + 
+//													":" + Switchboard.serverPort + "/audio");
 //			receiver.startPlayer();
 
 	}
@@ -62,7 +62,7 @@ public class RTPConnector {
 	 */
 	public void stop(){
 		try {
-			receiver.stop();
+			this.receiver.stop();
 		} catch (IOException e) {
 			System.err.println("We need to do something fancy here if something bad happens");
 			e.printStackTrace();
