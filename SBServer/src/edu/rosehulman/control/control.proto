@@ -1,0 +1,8 @@
+// proto
+package edu.rosehulman.net_control
+
+message allowClientsToSendToThisClient {
+    required int id = 1;
+    required 
+
+}

@@ -3,7 +3,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import edu.rosehulman.net_control.ControlListener;
+import edu.rosehulman.control.ControlListener;
 
 
 public class Switchboard {
@@ -35,7 +35,7 @@ public class Switchboard {
 		//manager = new ClientManager(clients);
 		
 		// Start Network Interface
-		Thread netFace = new Thread(new ControlListener(), "Switchboard Control Server");
+		Thread netFace = new Thread(new ControlListener(controlPort), "Switchboard Control Server");
 		netFace.start();
 		
 		// init our RTP Connector

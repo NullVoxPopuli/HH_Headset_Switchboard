@@ -2,12 +2,8 @@ package edu.rosehulman;
 
 
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.util.Vector;
 
 import javax.media.ControllerEvent;
 import javax.media.ControllerListener;
@@ -23,7 +19,6 @@ import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
 import javax.media.rtp.Participant;
-import javax.media.rtp.RTPStream;
 import javax.media.rtp.ReceiveStream;
 import javax.media.rtp.ReceiveStreamListener;
 import javax.media.rtp.SessionAddress;
@@ -34,9 +29,6 @@ import javax.media.rtp.event.NewReceiveStreamEvent;
 import javax.media.rtp.event.ReceiveStreamEvent;
 import javax.media.rtp.event.SessionEvent;
 import javax.media.rtp.rtcp.SourceDescription;
-
-import com.sun.media.rtp.RTPRemoteSourceInfo;
-import com.sun.media.rtp.RecvSSRCInfo;
 
 public class RTPMediaNode implements ControllerListener, ReceiveStreamListener, SessionListener  {
 	public static final Format[] FORMATS = new Format[] { new AudioFormat(
