@@ -4,10 +4,18 @@ package edu.rosehulman;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.media.DataSink;
 import javax.media.Format;
+import javax.media.Manager;
+import javax.media.MediaLocator;
+import javax.media.NoDataSinkException;
+import javax.media.NotRealizedError;
+import javax.media.Processor;
+import javax.media.ProcessorModel;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
@@ -31,6 +39,9 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 
 	private RTPManager mgr;
 	private Hashtable<Long, DataSource> ssrcToStream = new Hashtable<Long, DataSource>();
+	private Hashtable<Long, String> ssrcToIp = new Hashtable<Long, String>();
+	private ArrayList<DataSource> sources = new ArrayList<DataSource>();
+	private DataSink sink = null;
 
 	/**
 	 * Creates the Manager that will be used to control the session
@@ -81,8 +92,6 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
                  if (Switchboard.DEBUG) System.out.println("Recieving new incoming data stream, associating with SSRC " + ssrc);
                  ssrcToStream.put(ssrc, dsource);
                  
-                 //Old code for adding to client manager, needs updating
-    	         if (dsource != null) ClientManager.addNewClientWithStream(dsource);
                  
              } catch (Exception e) {
                  System.err.println("NewReceiveStreamEvent exception " 
@@ -97,20 +106,49 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 	}
 
 	@Override
-	public void update(SessionEvent event) {
+	public void update(SessionEvent event){
 		if (event instanceof NewParticipantEvent)
 		{
+            DataSource dsource = null;
+            String cname;
+            Long ssrc;
+            Processor p = null;
+            MediaLocator ml = null;
+            
 			Participant participant = ((NewParticipantEvent) event).getParticipant();
 			Vector<RecvSSRCInfo> streams = participant.getStreams();
 			if (!streams.isEmpty())
 			{
+				dsource = streams.get(0).getDataSource();
 				RecvSSRCInfo ssrcInfo = (RecvSSRCInfo) streams.get(0);
+				cname = participant.getCNAME();
+				ssrc = ssrcInfo.getSSRC();
 				//byte[] ssrcbytes = intToByteArray(ssrcInfo.getSSRC());
-				System.out.println("Data sending user recognized: " + participant.getCNAME() + " with SSRC " + ssrcInfo.getSSRC());
+				System.out.println("Data sending user recognized: " + cname + " with SSRC " + ssrc);
+				String ip = ssrcToIp.get(ssrc); 
+   	         	if (dsource != null) ClientManager.addNewClientWithStream(dsource, ip, cname);
+   	         	
+   	         	try {
+   	         		ml = new MediaLocator("rtp://"+ip+":"+13378+"/audio");
+					p = Manager.createRealizedProcessor(new ProcessorModel(ml, FORMATS, new ContentDescriptor(ContentDescriptor.RAW_RTP)));
+					sources.add((DataSource) p);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				MergingDataSource merger = new MergingDataSource((DataSource[])sources.toArray());
+				try {
+					this.sink = Manager.createDataSink(p.getDataOutput(), ml);
+					sink.open();
+					sink.start();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();}
+				
 			}
 		}
 	}
-	
+
 	public static final byte[] intToByteArray(int value) {
 		return new byte[]{
 		(byte)(value >>> 24), (byte)(value >> 16 & 0xff), (byte)(value >> 8 & 0xff), (byte)(value & 0xff) };
@@ -119,5 +157,6 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 	@Override
 	public void newAssociation(String ip, long ssrc) {
 		System.out.println("New source detected. IP: " + ip + " | SSRC: " + ssrc);
+		ssrcToIp.put(ssrc, ip);
 	}
 }

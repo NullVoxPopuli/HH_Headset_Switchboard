@@ -16,6 +16,19 @@ public class Client {
 	private String name;
 	private String macAddress;
 	private Object audioStream;
+	private String ipAddress;
+
+	/**
+	 * The IP address of this client
+	 * @return The client's address
+	 */
+	public String getIpAddress() {
+		return ipAddress;
+	}
+	
+	public void setIpAddress(String ip) {
+		this.ipAddress = ip;
+	}
 
 	/**
 	 * The Audience is the list of clients that a client can talk to.
@@ -165,6 +178,14 @@ public class Client {
 	{
 		this.audioStream = audioStream;
 		this.macAddress = macAddress;
+	}
+
+	public Client(Object audioStream, String macAddress, String ip,
+			String cname) {
+		this.audioStream = audioStream;
+		this.macAddress = macAddress;
+		this.ipAddress = ip;
+		this.name = cname;
 	}
 
 	/**
