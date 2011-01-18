@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.media.DataSink;
 import javax.media.Format;
+import javax.media.IncompatibleSourceException;
 import javax.media.Manager;
 import javax.media.MediaLocator;
 import javax.media.NoDataSinkException;
@@ -130,18 +131,21 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
    	         	
    	         	try {
    	         		ml = new MediaLocator("rtp://"+ip+":"+13380+"/audio");
-					p = Manager.createRealizedProcessor(new ProcessorModel(ml, FORMATS, new ContentDescriptor(ContentDescriptor.RAW_RTP)));
-					this.sources.add((DataSource) p);
+					this.sources.add(dsource);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					System.err.println("Could not create send stream");
 					e.printStackTrace();
 				}
-				MergingDataSource merger = new MergingDataSource((DataSource[])this.sources.toArray());
+				DataSource[] sources = new DataSource[this.sources.size()];
+				this.sources.toArray(sources);
+				
 				try {
-					this.sink = Manager.createDataSink(merger, ml);
+					DataSource finalSource = Manager.createMergingDataSource(sources);
+					this.sink = Manager.createDataSink(dsource, ml);
 					this.sink.open();
 					this.sink.start();
+					if (Switchboard.DEBUG) System.out.println("Sending audio to client: " + cname);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();}
