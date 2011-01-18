@@ -1,8 +1,13 @@
-// proto
-package edu.rosehulman.net_control
+package control;
+option java_package = "edu.rosehulman.control";
 
-message allowClientsToSendToThisClient {
-    required int id = 1;
-    required 
-
+message ChangeNameOfClient {
+    required byte id = 1;
+    required string newName = 2;
 }
+
+message ListClients {
+    optional string conditions = 1;
+}
+
+
