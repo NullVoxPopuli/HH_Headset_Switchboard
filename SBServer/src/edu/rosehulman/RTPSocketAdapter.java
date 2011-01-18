@@ -44,17 +44,17 @@ public class RTPSocketAdapter implements RTPConnector {
     	{
     		if (addr.isMulticastAddress())
     		{
-    			dataSock = new MulticastSocket(port);
-    			ctrlSock = new MulticastSocket(port+1);
-    			((MulticastSocket)dataSock).joinGroup(addr);
-    			((MulticastSocket)dataSock).setTimeToLive(ttl);
-    			((MulticastSocket)ctrlSock).joinGroup(addr);
-    			((MulticastSocket)ctrlSock).setTimeToLive(ttl);
+    			this.dataSock = new MulticastSocket(port);
+    			this.ctrlSock = new MulticastSocket(port+1);
+    			((MulticastSocket)this.dataSock).joinGroup(addr);
+    			((MulticastSocket)this.dataSock).setTimeToLive(ttl);
+    			((MulticastSocket)this.ctrlSock).joinGroup(addr);
+    			((MulticastSocket)this.ctrlSock).setTimeToLive(ttl);
     		}
     		else
     		{
-    			dataSock = new DatagramSocket(port, InetAddress.getLocalHost());
-    			ctrlSock = new DatagramSocket(port+1, InetAddress.getLocalHost());
+    			this.dataSock = new DatagramSocket(port, InetAddress.getLocalHost());
+    			this.ctrlSock = new DatagramSocket(port+1, InetAddress.getLocalHost());
     		}
     	}
     	catch (SocketException e)
@@ -75,52 +75,52 @@ public class RTPSocketAdapter implements RTPConnector {
      * Returns an input stream to receive the RTP data. 
      */
     public PushSourceStream getDataInputStream() throws IOException {
-	if (dataInStrm == null) {
-	    dataInStrm = new SockInputStream(dataSock, addr, port);
-	    dataInStrm.start();
+	if (this.dataInStrm == null) {
+	    this.dataInStrm = new SockInputStream(this.dataSock, this.addr, this.port);
+	    this.dataInStrm.start();
 	}
-	return dataInStrm;
+	return this.dataInStrm;
     }
 
     /**
      * Returns an output stream to send the RTP data.
      */
     public OutputDataStream getDataOutputStream() throws IOException {
-	if (dataOutStrm == null)
-	    dataOutStrm = new SockOutputStream(dataSock, addr, port);
-	return dataOutStrm;
+	if (this.dataOutStrm == null)
+	    this.dataOutStrm = new SockOutputStream(this.dataSock, this.addr, this.port);
+	return this.dataOutStrm;
     }
 
     /**
      * Returns an input stream to receive the RTCP data.
      */
     public PushSourceStream getControlInputStream() throws IOException {
-	if (ctrlInStrm == null) {
-	    ctrlInStrm = new SockInputStream(ctrlSock, addr, port+1);
-	    ctrlInStrm.start();
+	if (this.ctrlInStrm == null) {
+	    this.ctrlInStrm = new SockInputStream(this.ctrlSock, this.addr, this.port+1);
+	    this.ctrlInStrm.start();
 	}
-	return ctrlInStrm;
+	return this.ctrlInStrm;
     }
 
     /**
      * Returns an output stream to send the RTCP data.
      */
     public OutputDataStream getControlOutputStream() throws IOException {
-	if (ctrlOutStrm == null)
-	    ctrlOutStrm = new SockOutputStream(ctrlSock, addr, port+1);
-	return ctrlOutStrm;
+	if (this.ctrlOutStrm == null)
+	    this.ctrlOutStrm = new SockOutputStream(this.ctrlSock, this.addr, this.port+1);
+	return this.ctrlOutStrm;
     }
 
     /**
      * Close all the RTP, RTCP streams.
      */
     public void close() {
-	if (dataInStrm != null)
-	    dataInStrm.kill();
-	if (ctrlInStrm != null)
-	    ctrlInStrm.kill();
-	dataSock.close();
-	ctrlSock.close();
+	if (this.dataInStrm != null)
+	    this.dataInStrm.kill();
+	if (this.ctrlInStrm != null)
+	    this.ctrlInStrm.kill();
+	this.dataSock.close();
+	this.ctrlSock.close();
     }
 
     /**
@@ -129,7 +129,7 @@ public class RTPSocketAdapter implements RTPConnector {
      * may not be able to do anything to this.
      */
     public void setReceiveBufferSize( int size) throws IOException {
-	dataSock.setReceiveBufferSize(size);
+	this.dataSock.setReceiveBufferSize(size);
     }
 
     /**
@@ -139,7 +139,7 @@ public class RTPSocketAdapter implements RTPConnector {
      */
     public int getReceiveBufferSize() {
 	try {
-	    return dataSock.getReceiveBufferSize();
+	    return this.dataSock.getReceiveBufferSize();
 	} catch (Exception e) {
 	    return -1;
 	}
@@ -151,7 +151,7 @@ public class RTPSocketAdapter implements RTPConnector {
      * may not be able to do anything to this.
      */
     public void setSendBufferSize( int size) throws IOException {
-	dataSock.setSendBufferSize(size);
+	this.dataSock.setSendBufferSize(size);
     }
 
     /**
@@ -161,7 +161,7 @@ public class RTPSocketAdapter implements RTPConnector {
      */
     public int getSendBufferSize() {
 	try {
-	    return dataSock.getSendBufferSize();
+	    return this.dataSock.getSendBufferSize();
 	} catch (Exception e) {
 	    return -1;
 	}
@@ -203,7 +203,7 @@ public class RTPSocketAdapter implements RTPConnector {
 
 	public int write(byte data[], int offset, int len) {
 	    try {
-		sock.send(new DatagramPacket(data, offset, len, addr, port));
+		this.sock.send(new DatagramPacket(data, offset, len, this.addr, this.port));
 	    } catch (Exception e) {
 		return -1;
 	    }
@@ -232,11 +232,11 @@ public class RTPSocketAdapter implements RTPConnector {
 	}
 
 	public int read(byte buffer[], int offset, int length) {
-	    DatagramPacket p = new DatagramPacket(buffer, offset, length, addr, port);
+	    DatagramPacket p = new DatagramPacket(buffer, offset, length, this.addr, this.port);
 	    
 	    try
 	    {
-	    	sock.receive(p);
+	    	this.sock.receive(p);
 	    }
 	    catch (IOException e)
 	    {
@@ -244,16 +244,19 @@ public class RTPSocketAdapter implements RTPConnector {
 	    }
 	    synchronized (this)
 	    {
-	    	dataRead = true;
+	    	this.dataRead = true;
 	    	notify();
 	    }
 	    
-	    System.out.println("<<New packet>> IP: " + p.getAddress().getHostAddress() + " gives SSRC: " + ReadSSRC(buffer));
+	    if (Switchboard.DEBUG_NETWORK)
+	    	System.out.println("<<New packet>> IP: " + p.getAddress().getHostAddress() + " gives SSRC: " + ReadSSRC(buffer));
 	    long ssrc = ReadSSRC(buffer);
-	    if (!previousSSRCSet.contains(ssrc))
+	    if (!RTPSocketAdapter.this.previousSSRCSet.contains(ssrc))
 	    {
-	    	previousSSRCSet.add(ssrc);
-	    	listener.newAssociation(p.getAddress().getHostAddress(), ssrc);
+	    	RTPSocketAdapter.this.previousSSRCSet.add(ssrc);
+	    	RTPSocketAdapter.this.listener.newAssociation(p.getAddress().getHostAddress(), ssrc);
+	    	if(Switchboard.DEBUG_NETWORK)
+	    		System.out.println("SSRC list size: " + RTPSocketAdapter.this.previousSSRCSet.size());
 	    }
 	    
 	    return p.getLength();
@@ -273,14 +276,14 @@ public class RTPSocketAdapter implements RTPConnector {
 
 	public synchronized void start() {
 	    super.start();
-	    if (sth != null) {
-		dataRead = true;
+	    if (this.sth != null) {
+		this.dataRead = true;
 		notify();
 	    }
 	}
 
 	public synchronized void kill() {
-	    done = true;
+	    this.done = true;
 	    notify();
 	}
 
@@ -290,7 +293,7 @@ public class RTPSocketAdapter implements RTPConnector {
 
 	public synchronized void setTransferHandler(SourceTransferHandler sth) {
 	    this.sth = sth;
-	    dataRead = true;
+	    this.dataRead = true;
 	    notify();
 	}
 
@@ -323,19 +326,19 @@ public class RTPSocketAdapter implements RTPConnector {
 	 * Loop and notify the transfer handler of new data.
 	 */
 	public void run() {
-	    while (!done) {
+	    while (!this.done) {
 
 		synchronized (this) {
-		    while (!dataRead && !done) {
+		    while (!this.dataRead && !this.done) {
 			try {
 			    wait();
 			} catch (InterruptedException e) { }
 		    }
-		    dataRead = false;
+		    this.dataRead = false;
 		}
 
-		if (sth != null && !done) {
-		    sth.transferData(this);
+		if (this.sth != null && !this.done) {
+		    this.sth.transferData(this);
 		}
 	    }
 	}

@@ -90,7 +90,7 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
                  //Associate SSRC to data stream
                  long ssrc = stream.getSSRC();
                  if (Switchboard.DEBUG) System.out.println("Recieving new incoming data stream, associating with SSRC " + ssrc);
-                 ssrcToStream.put(ssrc, dsource);
+                 this.ssrcToStream.put(ssrc, dsource);
                  
                  
              } catch (Exception e) {
@@ -125,22 +125,23 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 				ssrc = ssrcInfo.getSSRC();
 				//byte[] ssrcbytes = intToByteArray(ssrcInfo.getSSRC());
 				System.out.println("Data sending user recognized: " + cname + " with SSRC " + ssrc);
-				String ip = ssrcToIp.get(ssrc); 
+				String ip = this.ssrcToIp.get(ssrc); 
    	         	if (dsource != null) ClientManager.addNewClientWithStream(dsource, ip, cname);
    	         	
    	         	try {
-   	         		ml = new MediaLocator("rtp://"+ip+":"+13378+"/audio");
+   	         		ml = new MediaLocator("rtp://"+ip+":"+13380+"/audio");
 					p = Manager.createRealizedProcessor(new ProcessorModel(ml, FORMATS, new ContentDescriptor(ContentDescriptor.RAW_RTP)));
-					sources.add((DataSource) p);
+					this.sources.add((DataSource) p);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
+					System.err.println("Could not create send stream");
 					e.printStackTrace();
 				}
-				MergingDataSource merger = new MergingDataSource((DataSource[])sources.toArray());
+				MergingDataSource merger = new MergingDataSource((DataSource[])this.sources.toArray());
 				try {
-					this.sink = Manager.createDataSink(p.getDataOutput(), ml);
-					sink.open();
-					sink.start();
+					this.sink = Manager.createDataSink(merger, ml);
+					this.sink.open();
+					this.sink.start();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();}
@@ -157,6 +158,6 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 	@Override
 	public void newAssociation(String ip, long ssrc) {
 		System.out.println("New source detected. IP: " + ip + " | SSRC: " + ssrc);
-		ssrcToIp.put(ssrc, ip);
+		this.ssrcToIp.put(ssrc, ip);
 	}
 }

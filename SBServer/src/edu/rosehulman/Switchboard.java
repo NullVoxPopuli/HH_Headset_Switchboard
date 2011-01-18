@@ -9,6 +9,9 @@ import edu.rosehulman.control.ControlListener;
 public class Switchboard {
 	public static final boolean DEBUG = true;
 
+
+	public static final boolean	DEBUG_NETWORK	= true;
+
 	
 	private static ClientManager manager;
 	private static RTPConnector rtpConnector = new RTPConnector();
