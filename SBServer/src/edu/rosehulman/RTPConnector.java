@@ -23,12 +23,12 @@ public class RTPConnector {
 		// We might want to consider a case where the IP address changes while 
 		// the system is already running.
 		if (Switchboard.DEBUG)
-			System.out.println("Trying to open receiver port at " +
-					Switchboard.serverIP + ":" + Switchboard.serverPort+"/audio");
+			System.out.println("Trying to open RTP switchboard port at " +
+					Switchboard.serverIP + ":" + Switchboard.serverPort);
 		
 //		receiver.setMediaLocator(new MediaLocator("rtp://" + Switchboard.serverIP + 
 //													":" + Switchboard.serverPort + "/audio"));
-		this.mgr = this.receiver.createManager(Switchboard.serverIP, Switchboard.serverPort, 100);
+		this.mgr = this.receiver.createManager(Switchboard.serverIP, Switchboard.serverPort);
 		
 		
 		

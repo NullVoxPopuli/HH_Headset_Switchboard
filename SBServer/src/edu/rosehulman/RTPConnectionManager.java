@@ -10,54 +10,42 @@ import java.util.Vector;
 
 import javax.media.DataSink;
 import javax.media.Format;
-import javax.media.IncompatibleSourceException;
 import javax.media.Manager;
 import javax.media.MediaLocator;
-import javax.media.NoDataSinkException;
-import javax.media.NotRealizedError;
 import javax.media.Processor;
-import javax.media.ProcessorModel;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
 import javax.media.rtp.Participant;
 import javax.media.rtp.RTPManager;
-import javax.media.rtp.ReceiveStream;
-import javax.media.rtp.ReceiveStreamListener;
 import javax.media.rtp.SessionListener;
 import javax.media.rtp.event.NewParticipantEvent;
-import javax.media.rtp.event.NewReceiveStreamEvent;
-import javax.media.rtp.event.ReceiveStreamEvent;
 import javax.media.rtp.event.SessionEvent;
 
 import com.sun.media.rtp.RecvSSRCInfo;
 
-public class RTPConnectionManager implements ReceiveStreamListener, SessionListener, AssociationListener {
+public class RTPConnectionManager implements SessionListener, AssociationListener {
 	public static final Format[] FORMATS = new Format[] { new AudioFormat(
 			AudioFormat.MPEG_RTP, 48000, 16, 2)};
 	public static final ContentDescriptor CONTENT_DESCRIPTOR = new ContentDescriptor(
 			ContentDescriptor.RAW_RTP);
 
 	private RTPManager mgr;
-	private Hashtable<Long, DataSource> ssrcToStream = new Hashtable<Long, DataSource>();
 	private Hashtable<Long, String> ssrcToIp = new Hashtable<Long, String>();
 	private ArrayList<DataSource> sources = new ArrayList<DataSource>();
 	private DataSink sink = null;
 
 	/**
-	 * Creates the Manager that will be used to control the session
-	 * @param address
-	 * @param port
-	 * @param ttl
-	 * @param listener
+	 * Creates the RTPManager that will be used to receive incoming connections from remote clients
+	 * @param address - The IP address to use when receiving incoming audio
+	 * @param port - The port to use when receiving incoming audio
 	 * @return
 	 */
-	public RTPManager createManager(String address, int port, int ttl) {
+	public RTPManager createManager(String address, int port) {
 		
 		this.mgr = RTPManager.newInstance();
 		this.mgr.addFormat(FORMATS[0], 18);
 		
-		this.mgr.addReceiveStreamListener(this);
 		this.mgr.addSessionListener(this);
 		
 		try {
@@ -75,37 +63,41 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 		return this.mgr;
 	}
 
-	@Override
-	public void update(ReceiveStreamEvent event) {	      
-         if (event instanceof NewReceiveStreamEvent)
-         {
-             DataSource dsource = null;
-             ReceiveStream stream = null;
-             
-             try
-             {
-                 // get a handle over the new incoming data stream
-                 stream =((NewReceiveStreamEvent)event).getReceiveStream();
-                 dsource = stream.getDataSource();
-                 
-                 //Associate SSRC to data stream
-                 long ssrc = stream.getSSRC();
-                 if (Switchboard.DEBUG) System.out.println("Recieving new incoming data stream, associating with SSRC " + ssrc);
-                 this.ssrcToStream.put(ssrc, dsource);
-                 
-                 
-             } catch (Exception e) {
-                 System.err.println("NewReceiveStreamEvent exception " 
-                                    + e.getMessage());
-                 e.printStackTrace();
-                 return;
-             }
-         }
-         else{
-        	 System.out.println("Don't know what to do with this: " + event.getParticipant());
-         }
-	}
+//	@Override
+//	public void update(ReceiveStreamEvent event) {	      
+////         if (event instanceof NewReceiveStreamEvent)
+////         {
+////             DataSource dsource = null;
+////             ReceiveStream stream = null;
+////             
+////             try
+////             {
+////                 // get a handle over the new incoming data stream
+////                 stream =((NewReceiveStreamEvent)event).getReceiveStream();
+////                 dsource = stream.getDataSource();
+////                 
+////                 //Associate SSRC to data stream
+////                 long ssrc = stream.getSSRC();
+////                 if (Switchboard.DEBUG) System.out.println("Recieving new incoming data stream, associating with SSRC " + ssrc);
+////                 this.ssrcToStream.put(ssrc, dsource);
+////                 
+////                 
+////             } catch (Exception e) {
+////                 System.err.println("NewReceiveStreamEvent exception " 
+////                                    + e.getMessage());
+////                 e.printStackTrace();
+////                 return;
+////             }
+////         }
+////         else{
+////        	 System.out.println("Don't know what to do with this: " + event.getParticipant());
+////         }
+//	}
 
+	/**
+	 * Callback required by the SessionListener interface. Called when a new participant has been recognized by the session
+	 * @param event - incoming SessionEvent that describes what happened and gives related data
+	 */
 	@Override
 	public void update(SessionEvent event){
 		if (event instanceof NewParticipantEvent)
@@ -113,7 +105,6 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
             DataSource dsource = null;
             String cname;
             Long ssrc;
-            Processor p = null;
             MediaLocator ml = null;
             
 			Participant participant = ((NewParticipantEvent) event).getParticipant();
@@ -125,7 +116,7 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 				cname = participant.getCNAME();
 				ssrc = ssrcInfo.getSSRC();
 				//byte[] ssrcbytes = intToByteArray(ssrcInfo.getSSRC());
-				System.out.println("Data sending user recognized: " + cname + " with SSRC " + ssrc);
+				if (Switchboard.DEBUG) System.out.println("Data sending user recognized: " + cname + " with SSRC " + ssrc);
 				String ip = this.ssrcToIp.get(ssrc); 
    	         	if (dsource != null) ClientManager.addNewClientWithStream(dsource, ip, cname);
    	         	
@@ -141,7 +132,7 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 				this.sources.toArray(sources);
 				
 				try {
-					DataSource finalSource = Manager.createMergingDataSource(sources);
+					//DataSource finalSource = Manager.createMergingDataSource(sources);
 					this.sink = Manager.createDataSink(dsource, ml);
 					this.sink.open();
 					this.sink.start();
@@ -154,14 +145,14 @@ public class RTPConnectionManager implements ReceiveStreamListener, SessionListe
 		}
 	}
 
-	public static final byte[] intToByteArray(int value) {
-		return new byte[]{
-		(byte)(value >>> 24), (byte)(value >> 16 & 0xff), (byte)(value >> 8 & 0xff), (byte)(value & 0xff) };
-		}
-
+	/**
+	 * Callback required by the AssociationListener interface. Called when a packet is seen with a previously unseen SSRC
+	 * @param ip - The IP address the SSRC came from
+	 * @param ssrc - The SSRC given by the packet
+	 */
 	@Override
 	public void newAssociation(String ip, long ssrc) {
-		System.out.println("New source detected. IP: " + ip + " | SSRC: " + ssrc);
+		if (Switchboard.DEBUG) System.out.println("New source detected. IP: " + ip + " | SSRC: " + ssrc);
 		this.ssrcToIp.put(ssrc, ip);
 	}
 }

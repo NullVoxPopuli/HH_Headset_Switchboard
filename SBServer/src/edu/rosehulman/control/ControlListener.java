@@ -36,14 +36,14 @@ public class ControlListener implements Runnable
 	{
 		try
 		{
-			System.out.println("Binding to port " + port + ", please wait  ...");
+			System.out.println("Binding control server to port " + port + ", please wait  ...");
 			this.serverSocket = new ServerSocket(port);
-			System.out.println("Server started: " + this.serverSocket);
+			System.out.println("Control server started: " + this.serverSocket);
 			startControlServer();
 		}
 		catch (IOException ioe)
 		{
-			System.out.println("Can not bind to port " + port + ": " + ioe.getMessage());
+			System.out.println("Can not bind control server to port " + port + ": " + ioe.getMessage());
 		}
 	}
 
@@ -54,12 +54,12 @@ public class ControlListener implements Runnable
 		{
 			try
 			{
-				System.out.println("Waiting for a client ...");
+				System.out.println("Waiting for a control client ...");
 				addThreadForControlClientConnection(this.serverSocket.accept());
 			}
 			catch (IOException ioe)
 			{
-				System.out.println("Server accept error: " + ioe);
+				System.out.println("Control server accept error: " + ioe);
 				stopControlServer();
 			}
 		}
