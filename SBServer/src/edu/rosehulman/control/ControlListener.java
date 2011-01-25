@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.Character.Subset;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -15,17 +16,42 @@ import edu.rosehulman.Switchboard;
  * client
  * 
  * Nearly all of the code here is from and modified slightly by wachsmut
- * http://pirate
- * .shu.edu/~wachsmut/Teaching/CSAS2214/Virtual/Lectures/chat-client-server.html
+  http://pirate.shu.edu/~wachsmut/Teaching/CSAS2214/Virtual/Lectures/chat-client-server.html
  * 
  * @author lprestonsegoiii. Created Jan 13, 2011.
  */
 public class ControlListener implements Runnable
 {
-	private ControlServerClientThread	controlClients[]		= new ControlServerClientThread[50];
+	private static ControlServerClientThread	controlClients[]		= new ControlServerClientThread[10];
 	private ServerSocket		serverSocket	= null;
 	private Thread				thread			= null;
-	private int					clientCount		= 0;
+	private static int					clientCount		= 0;
+	/**
+	 * Returns the value of the field called 'controlClients'.
+	 * @return Returns the controlClients.
+	 */
+	public static ControlServerClientThread[] getControlClients()
+	{
+		return controlClients;
+	}
+	
+	public static int getControlClientWithID(int ID)
+	{
+		for (int i = 0; i < clientCount; i++)
+			if (ID == controlClients[i].ID) return i;
+		return -1;
+	}
+
+	/**
+	 * Returns the value of the field called 'clientCount'.
+	 * @return Returns the clientCount.
+	 */
+	public static int getClientCount()
+	{
+		return clientCount;
+	}
+
+	public static final int COMMAND = 0;
 
 	/**
 	 * Constructor
@@ -36,14 +62,14 @@ public class ControlListener implements Runnable
 	{
 		try
 		{
-			System.out.println("Binding control server to port " + port + ", please wait  ...");
+			System.out.println("Binding to port " + port + ", please wait  ...");
 			this.serverSocket = new ServerSocket(port);
-			System.out.println("Control server started: " + this.serverSocket);
+			System.out.println("Server started: " + this.serverSocket);
 			startControlServer();
 		}
 		catch (IOException ioe)
 		{
-			System.out.println("Can not bind control server to port " + port + ": " + ioe.getMessage());
+			System.out.println("Can not bind to port " + port + ": " + ioe.getMessage());
 		}
 	}
 
@@ -54,12 +80,12 @@ public class ControlListener implements Runnable
 		{
 			try
 			{
-				System.out.println("Waiting for a control client ...");
+				System.out.println("Waiting for a client ...");
 				addThreadForControlClientConnection(this.serverSocket.accept());
 			}
 			catch (IOException ioe)
 			{
-				System.out.println("Control server accept error: " + ioe);
+				System.out.println("Server accept error: " + ioe);
 				stopControlServer();
 			}
 		}
@@ -93,16 +119,60 @@ public class ControlListener implements Runnable
 
 	public synchronized void processMessage(int ID, String input)
 	{
-		if (input.equals(".bye"))
+		System.out.println("RECIEVED: " + input);
+		if (input.charAt(0) == '/')
 		{
-			this.controlClients[findControlClient(ID)].sendToAssociatedControlClient(".bye");
-			removeControlClient(ID);
+			// we have a command
+			String commandString = input.substring(1, input.length());
+			String[] commandArgs = commandString.split(" ");
+			String command = commandArgs[COMMAND];
+			
+			if (Switchboard.DEBUG) System.out.println(command);
+			
+			if (command.equals("exit") || command.equals("quit"))
+			{
+				System.out.println("Client " + ID + " leaving...");
+				this.controlClients[findControlClient(ID)].sendToAssociatedControlClient(".bye");
+				removeControlClient(ID);
+			}
+			else if(command.equals("atc")) // add to client
+			{
+				// first IP is the user being added to, teh rest are more
+				// audience members
+				
+			}
+			else if (command.equals("rfc"))
+			{
+				// first IP is teh user being removed from, the rest are
+				// adience members that are being removed
+				
+			}
+			else if (command.equals("nc"))
+			{
+				// first arg is the IP, the second is the name for that client
+	
+			}
+			else if (command.equals("ls"))
+			{
+				// list all the users, and send them to the client that asked
+				ControlMessages.sendListOfClients(ID);
+			}
+			else if (command.equals("help"))
+			{
+				// send help to the requesting control client.
+				ControlMessages.sendHelp(ID);
+			}
+			else
+			{
+				System.err.println(input);
+			}
+			
 		}
-// from the original code, which was a chat server. 
-// this sends the message to all connected clients.
-//		else
-//			for (int i = 0; i < this.clientCount; i++)
-//				this.clients[i].send(ID + ": " + input);
+		else
+		{
+//
+		}
+		
 	}
 
 	public synchronized void removeControlClient(int ID)
@@ -193,7 +263,7 @@ public class ControlListener implements Runnable
 			{
 				try
 				{
-					this.server.processMessage(this.ID, this.streamIn.readUTF());
+					this.server.processMessage(ControlListener.getControlClientWithID(this.ID), this.streamIn.readUTF());
 				}
 				catch (IOException ioe)
 				{

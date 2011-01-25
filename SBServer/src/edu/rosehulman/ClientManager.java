@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.media.Control;
-import javax.media.MediaLocator;
 import javax.media.Player;
 import javax.media.protocol.DataSource;
 import javax.media.rtp.RTPControl;
@@ -57,20 +56,20 @@ public class ClientManager {
 	}
 
 	/**
-	 * Add a client with a stream to the list of clients
+	 * Add a client with a streamto the list of clients
 	 *
 	 * @param dsource
 	 * @param remoteParticipants
 	 */
-	public static void addNewClientWithStream(DataSource dsource, String ip, String cname)
+	public static void addNewClientWithStream(DataSource dsource)
 	{
 		if(Switchboard.DEBUG) System.out.println("Adding Client to the ClientManager...");
 		String macAddress = "";
 
-		Client c = new Client(dsource, macAddress, ip, cname);
+
 		// DataSource.rtpcontrol.stream.address (Inet4Address)
 
-		clients.add(c);
+		clients.add(new Client(dsource, macAddress));
 		
 	}
 
