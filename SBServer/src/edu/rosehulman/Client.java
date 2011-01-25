@@ -17,7 +17,8 @@ public class Client {
 	private String macAddress;
 	private Object audioStream;
 	private String ipAddress;
-
+	private String computerName;
+	
 	/**
 	 * The IP address of this client
 	 * @return The client's address
@@ -138,8 +139,8 @@ public class Client {
 	 * @param name - the name identifying this client
 	 * @param mac - the MAC address of this client. Formatted 0a1b2c3d4e5f.
 	 */
-	public Client(String name, String mac) {
-		this(new Channel(), name, mac);
+	public Client(String ip, String computer_name) {
+		this(new Channel(), computer_name, ip);
 	}
 	
 	/**
@@ -151,10 +152,10 @@ public class Client {
 	 * @param mac - the MAC address of this client. Formatted 0a1b2c3d4e5f
 	 * @param port
 	 */
-	public Client(Channel audience, String name, String mac) {
+	public Client(Channel audience, String computer_name, String ip) {
 		this.audience = audience;
-		this.name = name;
-		this.macAddress = mac;
+		this.computerName = computer_name;
+		this.ipAddress = ip;
 	}
 
 	/**

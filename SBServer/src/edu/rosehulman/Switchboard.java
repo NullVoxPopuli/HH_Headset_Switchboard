@@ -32,7 +32,7 @@ public class Switchboard {
 			e.printStackTrace();
 			System.out.println("We will need a way to handle this error easily for the user");
 		}
-		// Since Client Manager is a singleton, we shoud make it static, so we don't have 
+		// Since Client Manager is a singleton, we should make it static, so we don't have 
 		// multiple copies.
 		//ArrayList<Client> clients = getClients();
 		//manager = new ClientManager(clients);
