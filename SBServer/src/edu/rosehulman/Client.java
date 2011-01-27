@@ -13,7 +13,9 @@ import javax.media.protocol.DataSource;
 public class Client {
 
 	private Channel audience;
-	private String name;
+	private String computerName;
+	private String ipAddress;
+	private String alias;
 	private String macAddress;
 	private Object audioStream;
 
@@ -61,8 +63,8 @@ public class Client {
 	 * 
 	 * @return the name.
 	 */
-	public String getName() {
-		return this.name;
+	public String getAlias() {
+		return this.alias;
 	}
 
 	/**
@@ -72,8 +74,44 @@ public class Client {
 	 * 
 	 * @param name - A string identifying the client.
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setAlias(String name) {
+		this.alias = name;
+	}
+	
+	/**
+	 * Returns the value of the field called 'computerName'.
+	 * @return Returns the computerName.
+	 */
+	public String getComputerName()
+	{
+		return this.computerName;
+	}
+
+	/**
+	 * Sets the field called 'computerName' to the given value.
+	 * @param computerName The computerName to set.
+	 */
+	public void setComputerName(String computerName)
+	{
+		this.computerName = computerName;
+	}
+	
+	/**
+	 * Returns the value of the field called 'ipAddress'.
+	 * @return Returns the ipAddress.
+	 */
+	public String getIpAddress()
+	{
+		return this.ipAddress;
+	}
+
+	/**
+	 * Sets the field called 'ipAddress' to the given value.
+	 * @param ipAddress The ipAddress to set.
+	 */
+	public void setIpAddress(String ipAddress)
+	{
+		this.ipAddress = ipAddress;
 	}
 
 	/**
@@ -140,7 +178,7 @@ public class Client {
 	 */
 	public Client(Channel audience, String name, String mac) {
 		this.audience = audience;
-		this.name = name;
+		this.alias = name;
 		this.macAddress = mac;
 	}
 

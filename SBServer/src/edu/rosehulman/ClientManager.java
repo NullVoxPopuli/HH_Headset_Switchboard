@@ -14,6 +14,8 @@ import javax.media.rtp.rtcp.SourceDescription;
 import com.sun.media.rtp.RTPRemoteSourceInfo;
 import com.sun.media.rtp.RecvSSRCInfo;
 
+import edu.rosehulman.exceptions.ClientNotFound;
+
 public class ClientManager {
 
 	private static ArrayList<Client> clients = new ArrayList<Client>();
@@ -86,5 +88,27 @@ public class ClientManager {
 			if(c.getMacAddress().equals(macAddress)) return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Returns the client that has a matching IP, computer name, or alias
+	 *
+	 * @param name - could be computer name, IP address, or alias
+	 * @return - client if found
+	 * @throws ClientNotFound - thrown if no client is found
+	 */
+	public static Client getClient(String name) throws ClientNotFound
+	{
+		for (Client curClient : clients)
+		{
+			if (curClient.getAlias().equals(name) ||
+					curClient.getComputerName().equals(name) ||
+					curClient.getIpAddress().equals(name))
+			{
+				return curClient;
+			}
+		}
+		
+		throw new ClientNotFound();
 	}
 }

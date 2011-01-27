@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.lang.Character.Subset;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
 import edu.rosehulman.Switchboard;
+import edu.rosehulman.control.Actions;
 
 /**
  * This handles Switchboard server control cammands, and gives feedback to the
@@ -25,7 +27,9 @@ public class ControlListener implements Runnable
 	private static ControlServerClientThread	controlClients[]		= new ControlServerClientThread[10];
 	private ServerSocket		serverSocket	= null;
 	private Thread				thread			= null;
-	private static int					clientCount		= 0;
+	private static int					controlClientCount		= 0;
+	public static final int COMMAND = 0;
+		
 	/**
 	 * Returns the value of the field called 'controlClients'.
 	 * @return Returns the controlClients.
@@ -35,10 +39,18 @@ public class ControlListener implements Runnable
 		return controlClients;
 	}
 	
+	/**
+	 * since the ID internally is kept by pids (which makes it difficult to 
+	 * send messages to control clients), we need to get teh index
+	 * that the control client is stored.
+	 *
+	 * @param ID - PID of the control client
+	 * @return
+	 */
 	public static int getControlClientWithID(int ID)
 	{
-		for (int i = 0; i < clientCount; i++)
-			if (ID == controlClients[i].ID) return i;
+		for (int i = 0; i < controlClientCount; i++)
+			if (ID == controlClients[i].pid) return i;
 		return -1;
 	}
 
@@ -46,12 +58,11 @@ public class ControlListener implements Runnable
 	 * Returns the value of the field called 'clientCount'.
 	 * @return Returns the clientCount.
 	 */
-	public static int getClientCount()
+	public static int getControlClientCount()
 	{
-		return clientCount;
+		return controlClientCount;
 	}
 
-	public static final int COMMAND = 0;
 
 	/**
 	 * Constructor
@@ -111,7 +122,7 @@ public class ControlListener implements Runnable
 
 	private int findControlClient(int ID)
 	{
-		for (int i = 0; i < this.clientCount; i++)
+		for (int i = 0; i < this.controlClientCount; i++)
 			if (this.controlClients[i].getID() == ID)
 				return i;
 		return -1;
@@ -139,7 +150,17 @@ public class ControlListener implements Runnable
 			{
 				// first IP is the user being added to, teh rest are more
 				// audience members
-				
+				if (commandArgs.length > 2)
+				{
+					String target = commandArgs[1];
+					String[] audience = Arrays.copyOfRange(commandArgs, 2, commandArgs.length);
+					Actions.addToClient(ID, target, audience);
+				}
+				else
+				{
+					Messages.sendMessage(ID, "Not enough arguments.");
+				}
+
 			}
 			else if (command.equals("rfc"))
 			{
@@ -155,12 +176,12 @@ public class ControlListener implements Runnable
 			else if (command.equals("ls"))
 			{
 				// list all the users, and send them to the client that asked
-				ControlMessages.sendListOfClients(ID);
+				Messages.sendListOfClients(ID);
 			}
 			else if (command.equals("help"))
 			{
 				// send help to the requesting control client.
-				ControlMessages.sendHelp(ID);
+				Messages.sendHelp(ID);
 			}
 			else
 			{
@@ -182,10 +203,10 @@ public class ControlListener implements Runnable
 		{
 			ControlServerClientThread toTerminate = this.controlClients[pos];
 			System.out.println("Removing client thread " + ID + " at " + pos);
-			if (pos < this.clientCount - 1)
-				for (int i = pos + 1; i < this.clientCount; i++)
+			if (pos < this.controlClientCount - 1)
+				for (int i = pos + 1; i < this.controlClientCount; i++)
 					this.controlClients[i - 1] = this.controlClients[i];
-			this.clientCount--;
+			this.controlClientCount--;
 			try
 			{
 				toTerminate.closeStreams();
@@ -200,15 +221,15 @@ public class ControlListener implements Runnable
 
 	private void addThreadForControlClientConnection(Socket socket)
 	{
-		if (this.clientCount < this.controlClients.length)
+		if (this.controlClientCount < this.controlClients.length)
 		{
 			System.out.println("Client accepted: " + socket);
-			this.controlClients[this.clientCount] = new ControlServerClientThread(this, socket);
+			this.controlClients[this.controlClientCount] = new ControlServerClientThread(this, socket);
 			try
 			{
-				this.controlClients[this.clientCount].openStreams();
-				this.controlClients[this.clientCount].start();
-				this.clientCount++;
+				this.controlClients[this.controlClientCount].openStreams();
+				this.controlClients[this.controlClientCount].start();
+				this.controlClientCount++;
 			}
 			catch (IOException ioe)
 			{
@@ -223,7 +244,7 @@ public class ControlListener implements Runnable
 	{
 		private ControlListener		server		= null;
 		private Socket				socket		= null;
-		private int					ID			= -1;
+		private int					pid			= -1;
 		private DataInputStream		streamIn	= null;
 		private DataOutputStream	streamOut	= null;
 
@@ -232,7 +253,7 @@ public class ControlListener implements Runnable
 			super();
 			this.server = _server;
 			this.socket = _socket;
-			this.ID = this.socket.getPort();
+			this.pid = this.socket.getPort();
 		}
 
 		public void sendToAssociatedControlClient(String msg)
@@ -244,31 +265,31 @@ public class ControlListener implements Runnable
 			}
 			catch (IOException ioe)
 			{
-				System.out.println(this.ID + " ERROR sending: " + ioe.getMessage());
-				this.server.removeControlClient(this.ID);
+				System.out.println(this.pid + " ERROR sending: " + ioe.getMessage());
+				this.server.removeControlClient(this.pid);
 				stop();
 			}
 		}
 
 		public int getID()
 		{
-			return this.ID;
+			return this.pid;
 		}
 
 		@Override
 		public void run()
 		{
-			System.out.println("Server Thread " + this.ID + " running.");
+			System.out.println("Server Thread " + this.pid + " running.");
 			while (true)
 			{
 				try
 				{
-					this.server.processMessage(ControlListener.getControlClientWithID(this.ID), this.streamIn.readUTF());
+					this.server.processMessage(ControlListener.getControlClientWithID(this.pid), this.streamIn.readUTF());
 				}
 				catch (IOException ioe)
 				{
-					System.out.println(this.ID + " ERROR reading: " + ioe.getMessage());
-					this.server.removeControlClient(this.ID);
+					System.out.println(this.pid + " ERROR reading: " + ioe.getMessage());
+					this.server.removeControlClient(this.pid);
 					stop();
 				}
 			}
