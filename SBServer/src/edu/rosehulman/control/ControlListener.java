@@ -165,7 +165,17 @@ public class ControlListener implements Runnable
 			else if (command.equals("rfc"))
 			{
 				// first IP is teh user being removed from, the rest are
-				// adience members that are being removed
+				// audience members that are being removed
+				if (commandArgs.length > 2)
+				{
+					String target = commandArgs[1];
+					String[] membersToRemove = Arrays.copyOfRange(commandArgs, 2, commandArgs.length);
+					Actions.removeFromClient(ID, target, membersToRemove);
+				}
+				else
+				{
+					Messages.sendMessage(ID, "Not enough argements.");
+				}
 				
 			}
 			else if (command.equals("nc"))

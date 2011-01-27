@@ -3,6 +3,7 @@ package edu.rosehulman.control;
 import edu.rosehulman.Client;
 import edu.rosehulman.ClientManager;
 import edu.rosehulman.exceptions.ClientNotFound;
+import edu.rosehulman.exceptions.MemberIsNotHeardByClient;
 
 /**
  * TODO Put here a description of what this class does.
@@ -19,14 +20,37 @@ public class Actions
 	 *            - the ID of the control client issuing this command
 	 * @param target
 	 *            - the client's IP, computer name, or alias that we are adding
-	 *            adience members too.
+	 *            audience members too.
 	 * @param audience
 	 *            - the array of IPs that that are to be added to the client
 	 */
 	public static void addToClient(int controlClientID, String target, String[] audience)
 	{
+		addToOrRemoveFromClient(controlClientID, target, audience, true);
+
+	}
+
+	/**
+	 * This is a helper method of addToClient and removeFromClient. Since both
+	 * methods do almost the same thing (as far as validation goes, it makes
+	 * sense to keep all the logic in one method.
+	 * 
+	 * @param controlClientID
+	 *            - the control client that issued the command.
+	 * @param target
+	 *            - the client that we are modifying
+	 * @param audience
+	 *            - the list of clients that are to be added or removed from the
+	 *            target client.
+	 * @param addingTo
+	 *            - true if we are adding to the target client, false if
+	 *            removing from the target client
+	 */
+	private static void addToOrRemoveFromClient(int controlClientID, String target, String[] audience, boolean addingTo)
+	{
 		Client targetClient;
-		String addedClients = "";
+		String clientsThatWereSuccessful = "";
+		String addOrRemove = addingTo ? "added" : "removed";
 		try
 		{
 			targetClient = ClientManager.getClient(target);
@@ -48,18 +72,43 @@ public class Actions
 			}
 			catch (ClientNotFound e)
 			{
-				Messages.sendMessage(controlClientID, "A member could could not be added to client.");
-				if (!addedClients.isEmpty())
-					Messages.sendMessage(controlClientID, "However, the following members were added: " + addedClients);
+				Messages.sendMessage(
+						controlClientID,
+						"A member could could not be " + addOrRemove + " to client.");
+				if (!clientsThatWereSuccessful.isEmpty())
+					Messages.sendMessage(
+							controlClientID,
+							"However, the following members were " + addOrRemove + ": " + clientsThatWereSuccessful);
 				e.printStackTrace();
-				
+
 				return;
 			}
-			
-			targetClient.addToAudience(clientThatCanHearTheTargetClient);
-			addedClients.concat(" " + member);
-		}
 
+			if (addingTo)
+			{
+				targetClient.addToAudience(clientThatCanHearTheTargetClient);
+				clientsThatWereSuccessful.concat(" " + member);
+
+			}
+			else
+			{
+				try
+				{
+					targetClient.removeFromAudience(clientThatCanHearTheTargetClient);
+					clientsThatWereSuccessful.concat(" " + member);
+
+				}
+				catch (MemberIsNotHeardByClient exception)
+				{
+					Messages.sendMessage(controlClientID, "Member, " + member + " is not heard by + " + target);
+					exception.printStackTrace();
+				}
+			}
+			
+			if (!clientsThatWereSuccessful.isEmpty())
+				Messages.sendMessage(controlClientID, "The following members were " + addOrRemove + ":\n" +
+						clientsThatWereSuccessful);
+		}
 	}
 
 	/**
@@ -82,5 +131,23 @@ public class Actions
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * 
+	 * This method assumes that none of the parameters that are passed are null
+	 * 
+	 * @param controlClientID
+	 *            - the ID of the control client issuing this command
+	 * @param target
+	 *            - the client's IP, computer name, or alias that we are adding
+	 *            audience members too.
+	 * @param membersToRemove
+	 *            - the array of IPs that that are to be added to the client
+	 */
+	public static void removeFromClient(int controlClientID, String target, String[] membersToRemove)
+	{
+		addToOrRemoveFromClient(controlClientID, target, membersToRemove, false);
+
 	}
 }
