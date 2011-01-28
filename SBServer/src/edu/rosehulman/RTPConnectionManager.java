@@ -47,7 +47,6 @@ public class RTPConnectionManager implements SessionListener, AssociationListene
 		this.mgr.addSessionListener(this);
 		
 		try {
-			address = "137.112.104.179";
 			RTPSocketAdapter socketAdapter = new RTPSocketAdapter(InetAddress.getByName(address), port);
 			socketAdapter.AddAssociationListener(this);
 			this.mgr.initialize(socketAdapter);
