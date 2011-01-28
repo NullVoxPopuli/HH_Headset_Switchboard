@@ -55,7 +55,7 @@ public class ControlMessages
 	
 	public static void sendToAll(String msg)
 	{
-		for (int i = 0; i < ControlListener.getClientCount(); i++)
+		for (int i = 0; i < ControlListener.getControlClientCount(); i++)
 			ControlListener.getControlClients()[i].sendToAssociatedControlClient(msg);
 	}
 }

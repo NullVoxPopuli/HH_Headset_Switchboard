@@ -192,6 +192,21 @@ public class Client
 	{
 		this(new Channel(), name, mac);
 	}
+	
+	/**
+	 * 
+	 * Constructor for a Client. No audience members.
+	 *
+	 * @param ipAddress
+	 * @param computerName
+	 * @param alias
+	 */
+	public Client(String ipAddress, String computerName, String alias)
+	{
+		this.setIpAddress(ipAddress);
+		this.setComputerName(computerName);
+		this.setAlias(alias);
+	}
 
 	/**
 	 * 

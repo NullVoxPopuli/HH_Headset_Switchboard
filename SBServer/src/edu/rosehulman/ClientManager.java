@@ -111,4 +111,16 @@ public class ClientManager {
 		
 		throw new ClientNotFound();
 	}
+
+	/**
+	 * creates a client from scratch and adds it to the client manager
+	 *
+	 * @param ipAddress
+	 * @param computerName
+	 * @param alias
+	 */
+	public static void addNewClient(String ipAddress, String computerName, String alias)
+	{
+		Client newClient = new Client(ipAddress, computerName, alias);
+	}
 }
