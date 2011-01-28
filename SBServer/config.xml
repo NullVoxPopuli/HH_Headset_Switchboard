@@ -1,38 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <user="user1">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user2">
 	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user3">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
+	  <ip_addres>value1</ip_addres>
+	  <comp_name>value2</comp_name>
 	</audience>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
+	  <ip_addres>value2</ip_addres>
+	  <comp_name>value2</comp_name>
 	</audience>
 	
 </user>
@@ -40,203 +28,101 @@
 	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user5">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user6">
 	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user7">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user8">
 	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user9">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user10">
 	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user11">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user12">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user13">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user14">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user15">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user16">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user17">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user18">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user19">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user>
 <user user="user20">
-	<ip_address>137.112.104.142</ip_address>
+	<ip_address>101.0.0.01</ip_address>
 	<comp_name>my computer</comp_name>
 	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
-	</audience>
-	<audience>
-	  <ip_addres>137.112.104.142</ip_addres>
-	  <comp_name>my computer</comp_name>
 	</audience>
 </user> 

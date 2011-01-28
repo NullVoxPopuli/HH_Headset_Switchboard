@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user="user1">
+	<ip_address>101.0.0.01</ip_address>
+	<comp_name>my computer</comp_name>
+	<audience>
+	</audience>
+</user>
+<user user="user2">
+	<ip_address>101.0.0.01</ip_address>
+	<comp_name>my computer</comp_name>
+	<audience>
+	</audience>
+</user>
