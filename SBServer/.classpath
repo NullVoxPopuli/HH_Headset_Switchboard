@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="jmf.jar"/>
 	<classpathentry kind="lib" path="mediaplayer.jar"/>
 	<classpathentry kind="lib" path="multiplayer.jar"/>
+	<classpathentry kind="lib" path="junit-4.9b2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
