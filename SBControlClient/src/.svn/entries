@@ -1,0 +1,41 @@
+8
+
+dir
+70
+https://trac.csse.rose-hulman.edu/svn/Switchboard/SBControlClient/src
+https://trac.csse.rose-hulman.edu/svn/Switchboard
+
+
+
+2011-01-12T22:38:48.138725Z
+70
+segolp@CSSE.ROSE-HULMAN.EDU
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+36961633-0640-4920-8812-62aaeed53f11
+
+SBControlClient.java
+file
+93
+
+
+
+2011-01-25T22:18:49.000000Z
+f6d205d96d5feeef6a3fc9017f1cd999
+2011-01-25T23:13:18.508650Z
+93
+segolp@CSSE.ROSE-HULMAN.EDU
+has-props
+

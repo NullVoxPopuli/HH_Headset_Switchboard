@@ -1,0 +1,60 @@
+8
+
+dir
+69
+https://trac.csse.rose-hulman.edu/svn/Switchboard/SBControlClient
+https://trac.csse.rose-hulman.edu/svn/Switchboard
+
+
+
+2011-01-12T22:37:24.768088Z
+69
+segolp@CSSE.ROSE-HULMAN.EDU
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+36961633-0640-4920-8812-62aaeed53f11
+
+.classpath
+file
+70
+
+
+
+2011-01-12T21:17:23.000000Z
+0feefca3562e5167ed8224d805b3b922
+2011-01-12T22:38:48.138725Z
+70
+segolp@CSSE.ROSE-HULMAN.EDU
+has-props
+
+.project
+file
+70
+
+
+
+2011-01-12T21:17:23.000000Z
+c7eeccf820c8ba12ff43cd8c23827dde
+2011-01-12T22:38:48.138725Z
+70
+segolp@CSSE.ROSE-HULMAN.EDU
+has-props
+
+.settings
+dir
+
+src
+dir
+

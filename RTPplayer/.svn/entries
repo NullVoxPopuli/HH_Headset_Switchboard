@@ -1,0 +1,68 @@
+8
+
+dir
+52
+https://trac.csse.rose-hulman.edu/svn/Switchboard/RTPplayer
+https://trac.csse.rose-hulman.edu/svn/Switchboard
+
+
+
+2011-01-03T05:40:34.145475Z
+47
+skaggskd@CSSE.ROSE-HULMAN.EDU
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+36961633-0640-4920-8812-62aaeed53f11
+
+.classpath
+file
+
+
+
+
+2011-01-09T08:32:15.000000Z
+faad576c953ac0f96b6adfb7e2e3bf8f
+2010-10-26T01:18:17.155624Z
+29
+skaggskd@CSSE.ROSE-HULMAN.EDU
+
+.project
+file
+
+
+
+
+2011-01-09T08:32:15.000000Z
+015dd5d75bcd6566722e88714e26860d
+2010-10-26T01:18:17.155624Z
+29
+skaggskd@CSSE.ROSE-HULMAN.EDU
+
+creep.wav
+file
+
+
+
+
+2011-01-09T08:32:23.000000Z
+c1e867b12bf8e6775722fcb15b63f0bb
+2010-10-29T01:24:15.250210Z
+31
+skaggskd@CSSE.ROSE-HULMAN.EDU
+has-props
+
+src
+dir
+
