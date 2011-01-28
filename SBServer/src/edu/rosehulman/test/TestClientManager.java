@@ -43,6 +43,7 @@ public class TestClientManager
 	{
 	}
 	
+	@Test
 	public void testAddingOfClients()
 	{
 		for(int i = 0; i < this.numberOfClients; i++)
@@ -50,8 +51,10 @@ public class TestClientManager
 			ClientManager.addNewClient(this.ipAddresses[i], this.compNames[i], this.aliases[i]);
 		}
 		
+		assert(ClientManager.getClients().size() == this.numberOfClients);
 	}
 	
+	@Test
 	public void testRetrievingClient() throws ClientNotFound{
 		for(int i = 0; i < this.numberOfClients; i++)
 		{
@@ -59,6 +62,8 @@ public class TestClientManager
 					ClientManager.getClient(this.compNames[i]).equals(ClientManager.getClient(this.aliases[i])));
 		}
 	}
+	
+	
 
 
 }

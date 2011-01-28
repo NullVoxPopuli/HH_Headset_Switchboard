@@ -15,6 +15,7 @@ import com.sun.media.rtp.RTPRemoteSourceInfo;
 import com.sun.media.rtp.RecvSSRCInfo;
 
 import edu.rosehulman.exceptions.ClientNotFound;
+import edu.rosehulman.exceptions.MemberIsNotHeardByClient;
 
 public class ClientManager {
 
@@ -46,10 +47,10 @@ public class ClientManager {
 		clients.add(c);
 	}
 
-	public void removeClient(Client c) {
+	public void removeClient(Client c) throws MemberIsNotHeardByClient {
 		clients.remove(c);
 		for (Client d : clients) {
-			d.removeClientFromChannel(c);
+			d.removeFromAudience(c);
 		}
 	}
 
@@ -66,28 +67,9 @@ public class ClientManager {
 	public static void addNewClientWithStream(DataSource dsource)
 	{
 		if(Switchboard.DEBUG) System.out.println("Adding Client to the ClientManager...");
-		String macAddress = "";
 
-
-		// DataSource.rtpcontrol.stream.address (Inet4Address)
-
-		clients.add(new Client(dsource, macAddress));
+		clients.add(new Client(dsource));
 		
-	}
-
-	/**
-	 * Verifies that the requested mac address isn't in use.
-	 *
-	 * @param macAddress formatted 0a1b2c3d4e5f
-	 * @return true if the MAC has not been used before. false otherwise.
-	 */
-	private static boolean isMacInUse(String macAddress)
-	{
-		for (Client c : clients)
-		{
-			if(c.getMacAddress().equals(macAddress)) return false;
-		}
-		return true;
 	}
 
 	/**

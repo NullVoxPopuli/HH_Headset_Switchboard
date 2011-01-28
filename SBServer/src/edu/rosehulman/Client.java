@@ -19,7 +19,6 @@ public class Client
 	private String	computerName;
 	private String	ipAddress;
 	private String	alias;
-	private String	macAddress;
 	private Object	audioStream;
 
 	/**
@@ -130,68 +129,6 @@ public class Client
 	{
 		this.ipAddress = ipAddress;
 	}
-
-	/**
-	 * Normally MAC addresses are formatted 0a:1b:2c:3d:4e:5f. But since the
-	 * colons are only to help humans read the address better, internally, the
-	 * colons are not needed.
-	 * 
-	 * @return the client's MAC address formatted without spaces. Example:
-	 *         0a1b2c3d4e5f
-	 */
-	public String getMacAddress()
-	{
-		return this.macAddress;
-	}
-
-	/**
-	 * 
-	 * Normally MAC addresses are formatted 0a:1b:2c:3d:4e:5f. But since the
-	 * colons are only to help humans read the address better, internally, the
-	 * colons are not needed.
-	 * 
-	 * @param macAddress
-	 *            - MAC address should be formatted 0a1b2c3d4e5f
-	 */
-	public void setMacAddress(String macAddress)
-	{
-		this.macAddress = macAddress;
-	}
-
-	/**
-	 * 
-	 * Internally the MAC address is stored without colons (0a1b2c3d4e5f) This
-	 * method returns the MAC address with the colons (0a:1b:2c:3d:4e:5f)
-	 * 
-	 * @return a human readable version of the MAC address formatted:
-	 *         0a:1b:2c:3d:4e:5f
-	 */
-	public String getHumanMacAddress()
-	{
-		String result = "";
-		for (byte i = 0; i < this.macAddress.length(); i++)
-		{
-			if (i % 2 == 0)
-				result.concat(":");
-			result.concat(String.valueOf(this.macAddress.charAt(i)));
-		}
-
-		return result;
-	}
-
-	/**
-	 * 
-	 * Constructor for a Client. Creates blank Channel
-	 * 
-	 * @param name
-	 *            - the name identifying this client
-	 * @param mac
-	 *            - the MAC address of this client. Formatted 0a1b2c3d4e5f.
-	 */
-	public Client(String name, String mac)
-	{
-		this(new Channel(), name, mac);
-	}
 	
 	/**
 	 * 
@@ -208,23 +145,6 @@ public class Client
 		this.setAlias(alias);
 	}
 
-	/**
-	 * 
-	 * Constructor for a client
-	 * 
-	 * @param audience
-	 * @param name
-	 *            - the name identifying this client
-	 * @param mac
-	 *            - the MAC address of this client. Formatted 0a1b2c3d4e5f
-	 * @param port
-	 */
-	public Client(Channel audience, String name, String mac)
-	{
-		this.audience = audience;
-		this.alias = name;
-		this.macAddress = mac;
-	}
 
 	/**
 	 * 
@@ -239,32 +159,31 @@ public class Client
 		this.setAudioStream(audioStream);
 	}
 
+
 	/**
-	 * Creates a client using a datasource and a MAC address to identify with.
-	 * 
-	 * @param audioStream
-	 *            - Stream that the audio comes fram
-	 * @param macAddress
-	 *            - MAC address that identifies the device that this client
-	 *            associates with
+	 * TODO Put here a description of what this constructor does.
+	 *
+	 * @param audIp
+	 * @param audCname
 	 */
-	public Client(Object audioStream, String macAddress)
+	public Client(String audIp, String audCname)
 	{
-		this.audioStream = audioStream;
-		this.macAddress = macAddress;
+		this.ipAddress = audIp;
+		this.computerName = audCname;
 	}
 
 	/**
-	 * 
-	 * Removes a client from the list of clients that this client can talk to.
-	 * 
-	 * @param c
-	 *            - a Client
+	 * TODO Put here a description of what this constructor does.
+	 *
+	 * @param chan
+	 * @param name
+	 * @param ip
 	 */
-	public void removeClientFromChannel(Client c)
+	public Client(Channel chan, String name, String ip)
 	{
-		if (this.audience.contains(c))
-			this.audience.remove(c);
+		this.audience = chan;
+		this.computerName = name;
+		this.ipAddress = ip;
 	}
 
 	/**
@@ -291,7 +210,10 @@ public class Client
 	 */
 	public void removeFromAudience(Client audienceMember) throws MemberIsNotHeardByClient
 	{
-		this.audience.remove(audienceMember);
+		if (this.audience.contains(audienceMember))
+			this.audience.remove(audienceMember);
+		else
+			throw new MemberIsNotHeardByClient();
 
 	}
 
