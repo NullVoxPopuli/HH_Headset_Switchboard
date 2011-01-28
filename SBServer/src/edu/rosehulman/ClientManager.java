@@ -105,4 +105,11 @@ public class ClientManager {
 	{
 		Client newClient = new Client(ipAddress, computerName, alias);
 	}
+	
+	public static void addNewClient(String ipAddress, String computerName, String alias, Object audioStream)
+	{
+		Client newClient = new Client(ipAddress, computerName, alias);
+		newClient.setAudioStream(audioStream);
+		clients.add(newClient);
+	}
 }

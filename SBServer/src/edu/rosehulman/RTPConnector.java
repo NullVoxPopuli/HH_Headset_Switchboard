@@ -1,20 +1,11 @@
 package edu.rosehulman;
-import java.io.IOException;
-
-import javax.media.Format;
-import javax.media.Manager;
-import javax.media.MediaLocator;
-import javax.media.Processor;
-import javax.media.ProcessorModel;
-import javax.media.format.AudioFormat;
-import javax.media.protocol.ContentDescriptor;
-import javax.media.rtp.SessionManager;
+import javax.media.rtp.RTPManager;
 
 
 public class RTPConnector {
 
-	RTPMediaNode receiver = new RTPMediaNode();
-	private SessionManager mgr;
+	RTPConnectionManager receiver = new RTPConnectionManager();
+	private RTPManager mgr;
 	boolean hasNotRecievedQuitCommand = true;
 
 	public String[] getConnections(){
@@ -32,12 +23,12 @@ public class RTPConnector {
 		// We might want to consider a case where the IP address changes while 
 		// the system is already running.
 		if (Switchboard.DEBUG)
-			System.out.println("Trying to open receiver port at " +
-					Switchboard.serverIP + ":" + Switchboard.serverPort+"/audio");
+			System.out.println("Trying to open RTP switchboard port at " +
+					Switchboard.serverIP + ":" + Switchboard.serverPort);
 		
 //		receiver.setMediaLocator(new MediaLocator("rtp://" + Switchboard.serverIP + 
 //													":" + Switchboard.serverPort + "/audio"));
-		this.mgr = this.receiver.createManager(Switchboard.serverIP, Switchboard.serverPort, 100, true);
+		this.mgr = this.receiver.createManager(Switchboard.serverIP, Switchboard.serverPort);
 		
 		
 		
@@ -61,12 +52,12 @@ public class RTPConnector {
 	 * ends an RTP streaming session
 	 */
 	public void stop(){
-		try {
+		/*try {
 			this.receiver.stop();
 		} catch (IOException e) {
 			System.err.println("We need to do something fancy here if something bad happens");
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	public void listenForStreams(){
